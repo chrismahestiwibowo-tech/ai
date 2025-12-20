@@ -9,7 +9,15 @@ from dotenv import load_dotenv
 load_dotenv()
 
 # Initialize OpenAI client
-client = OpenAI(api_key=os.getenv('OPENAI_API_KEY'))
+api_key = os.getenv('OPENAI_API_KEY')
+if not api_key:
+    raise ValueError(
+        "OpenAI API key not found! Please set OPENAI_API_KEY environment variable.\n"
+        "You can do this by:\n"
+        "1. Creating a .env file with: OPENAI_API_KEY=your_key_here\n"
+        "2. Or setting it as an environment variable in your system/deployment platform"
+    )
+client = OpenAI(api_key=api_key)
 
 def get_btc_price_data():
     """Fetch current Bitcoin price and recent data from multiple sources"""
