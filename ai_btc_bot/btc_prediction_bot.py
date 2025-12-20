@@ -113,7 +113,7 @@ Recent prices show {"an upward" if btc_data['price_change_24h'] > 0 else "a down
     try:
         # Create the AI prediction request
         response = client.chat.completions.create(
-            model="gpt-4",
+            model="gpt-5",
             messages=[
                 {
                     "role": "system",

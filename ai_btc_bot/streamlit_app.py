@@ -104,7 +104,7 @@ Recent prices show {"an upward" if btc_data['price_change_24h'] > 0 else "a down
     try:
         # Create the AI prediction request
         response = client.chat.completions.create(
-            model="gpt-4",
+            model="gpt-5",
             messages=[
                 {
                     "role": "system",
@@ -143,7 +143,7 @@ def main():
     
     # Title and header
     st.title("🚀 Bitcoin Price Prediction Bot")
-    st.markdown("### Powered by OpenAI GPT-4")
+    st.markdown("### Powered by OpenAI GPT-5")
     st.divider()
     
     # Get OpenAI client
@@ -195,7 +195,7 @@ def main():
         
         # Generate AI analysis if data is ready
         if hasattr(st.session_state, 'analysis_ready') and st.session_state.analysis_ready:
-            with st.spinner("Analyzing with OpenAI GPT-4..."):
+            with st.spinner("Analyzing with OpenAI GPT-5..."):
                 prediction = analyze_btc_with_ai(st.session_state.btc_data, client)
                 
                 if prediction:
