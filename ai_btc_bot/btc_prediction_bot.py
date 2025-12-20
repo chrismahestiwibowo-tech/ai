@@ -137,7 +137,6 @@ Please provide:
 Be specific with price targets but also note confidence levels and disclaimers about market volatility."""
                 }
             ],
-            temperature=0.7,
             max_completion_tokens=1000
         )
         
