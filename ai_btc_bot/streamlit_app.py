@@ -142,7 +142,7 @@ def main():
     """Main Streamlit app"""
     
     # Title and header
-    st.title("🚀 Bitcoin Price Prediction Bot")
+    st.title("₿ Bitcoin Price Prediction Bot")
     st.markdown("### Powered by OpenAI GPT-4")
     st.divider()
     
