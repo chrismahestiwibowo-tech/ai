@@ -211,6 +211,18 @@ def main():
     Not financial advice. Cryptocurrency investments carry high risk. Always do your own research
     and consult with financial professionals before making investment decisions.
     """)
+    
+    # GitHub link footer
+    st.divider()
+    st.markdown(
+        """
+        <div style='text-align: center; padding: 10px;'>
+            <p>Made with ❤️ by <a href='https://github.com/chrismahestiwibowo-tech' target='_blank'>chrismahestiwibowo-tech</a></p>
+            <p>View source code on <a href='https://github.com/chrismahestiwibowo-tech/ai' target='_blank'>GitHub</a> ⭐</p>
+        </div>
+        """,
+        unsafe_allow_html=True
+    )
 
 if __name__ == "__main__":
     main()
