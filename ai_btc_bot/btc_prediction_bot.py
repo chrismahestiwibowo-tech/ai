@@ -8,15 +8,28 @@ from dotenv import load_dotenv
 # Load environment variables
 load_dotenv()
 
-# Initialize OpenAI client
-api_key = os.getenv('OPENAI_API_KEY')
+# Initialize OpenAI client - supports both Streamlit Cloud and local development
+api_key = None
+
+# Try to get API key from Streamlit secrets first (for Streamlit Cloud)
+try:
+    import streamlit as st
+    api_key = st.secrets.get("OPENAI_API_KEY")
+except:
+    pass
+
+# If not found in Streamlit secrets, try environment variable
+if not api_key:
+    api_key = os.getenv('OPENAI_API_KEY')
+
+# If still not found, provide helpful error
 if not api_key:
     raise ValueError(
-        "OpenAI API key not found! Please set OPENAI_API_KEY environment variable.\n"
-        "You can do this by:\n"
-        "1. Creating a .env file with: OPENAI_API_KEY=your_key_here\n"
-        "2. Or setting it as an environment variable in your system/deployment platform"
+        "OpenAI API key not found!\n"
+        "For Streamlit Cloud: Add OPENAI_API_KEY to your app secrets\n"
+        "For local development: Create a .env file with OPENAI_API_KEY=your_key_here"
     )
+
 client = OpenAI(api_key=api_key)
 
 def get_btc_price_data():
