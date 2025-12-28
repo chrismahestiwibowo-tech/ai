@@ -495,13 +495,13 @@ try:
         
         fig, ax = plt.subplots(figsize=(16, 8))
         ax.plot(df['ds'], df['y'], label='Actual Prices', color='blue', linewidth=2.5, marker='o', markersize=2)
-        ax.plot(df['ds'], lrm_historical_predictions, label='LinearRegression Fit', color='green', linewidth=1.5, linestyle='--', alpha=0.7)
-        ax.plot(forecast_lrm['ds'][:len(df)], forecast_lrm['yhat'][:len(df)], label='Prophet (on LRM)', color='orange', linewidth=1.5, linestyle=':')
+        ax.plot(df['ds'], lrm_historical_predictions, label='🌸 Orchid Fit', color='green', linewidth=1.5, linestyle='--', alpha=0.7)
+        ax.plot(forecast_lrm['ds'][:len(df)], forecast_lrm['yhat'][:len(df)], label='Prophet (on Orchid)', color='orange', linewidth=1.5, linestyle=':')
         
         # Future forecasts
-        ax.plot(future_predictions_prophet['ds'], future_predictions_prophet['yhat'], label='Prophet Forecast', color='red', linewidth=2)
-        ax.plot(future_predictions_xgb['ds'], future_predictions_xgb['yhat'], label='XGBoost Forecast', color='purple', linewidth=2)
-        ax.plot(future_predictions_lstm['ds'], future_predictions_lstm['yhat'], label='LSTM Forecast', color='magenta', linewidth=2)
+        ax.plot(future_predictions_prophet['ds'], future_predictions_prophet['yhat'], label='🌸 Orchid Forecast', color='red', linewidth=2)
+        ax.plot(future_predictions_xgb['ds'], future_predictions_xgb['yhat'], label='🌼 Jasmine Forecast', color='purple', linewidth=2)
+        ax.plot(future_predictions_lstm['ds'], future_predictions_lstm['yhat'], label='🌺 Bougainvillea Forecast', color='magenta', linewidth=2)
         
         # Ensemble average
         ensemble_forecast = (future_predictions_prophet['yhat'].values + future_predictions_xgb['yhat'].values + future_predictions_lstm['yhat'].values) / 3
@@ -519,7 +519,7 @@ try:
         # Model comparison table
         st.subheader("📋 Tomorrow's Predictions - All Models")
         tomorrow_data = {
-            'Model': ['Prophet (LR+Prophet)', 'XGBoost (Enhanced)', 'LSTM (Deep Learning)', 'Ensemble Average'],
+            'Model': ['🌸 Orchid', '🌼 Jasmine', '🌺 Bougainvillea', 'Ensemble Average'],
             'Predicted Price': [
                 f'${next_price_prophet:.2f}',
                 f'${next_price_xgb:.2f}',
