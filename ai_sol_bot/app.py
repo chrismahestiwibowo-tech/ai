@@ -31,23 +31,115 @@ st.set_page_config(
 # Custom CSS
 st.markdown("""
 <style>
+    /* Light mode (default) */
     .main-header {
         font-size: 48px;
         font-weight: bold;
         color: #1f77b4;
         text-align: center;
         margin-bottom: 30px;
+        padding: 10px;
     }
+    
     .metric-card {
         background-color: #f0f2f6;
         padding: 20px;
         border-radius: 10px;
         box-shadow: 2px 2px 5px rgba(0,0,0,0.1);
     }
+    
     .stMetric {
         background-color: white;
         padding: 15px;
         border-radius: 8px;
+    }
+    
+    /* Dark mode support */
+    @media (prefers-color-scheme: dark) {
+        .main-header {
+            color: #66b3ff;
+            text-shadow: 0 0 10px rgba(102, 179, 255, 0.3);
+        }
+        
+        .metric-card {
+            background-color: #1e1e1e;
+            box-shadow: 2px 2px 5px rgba(255,255,255,0.1);
+        }
+        
+        .stMetric {
+            background-color: #2d2d2d !important;
+            color: #ffffff !important;
+        }
+        
+        /* Ensure text is readable in dark mode */
+        .stMarkdown, .stText {
+            color: #e0e0e0 !important;
+        }
+        
+        /* Table styling for dark mode */
+        .dataframe {
+            background-color: #2d2d2d !important;
+            color: #ffffff !important;
+        }
+        
+        /* Info boxes in dark mode */
+        .stAlert {
+            background-color: #2d2d2d !important;
+            border-color: #66b3ff !important;
+        }
+    }
+    
+    /* Mobile responsive design */
+    @media only screen and (max-width: 768px) {
+        .main-header {
+            font-size: 32px !important;
+            margin-bottom: 20px;
+        }
+        
+        .stMetric {
+            padding: 10px !important;
+            margin-bottom: 10px;
+        }
+        
+        /* Ensure metrics stack nicely on mobile */
+        [data-testid="column"] {
+            padding: 5px !important;
+        }
+        
+        /* Make charts responsive */
+        .stPlotlyChart, .stPyplot {
+            width: 100% !important;
+            height: auto !important;
+        }
+        
+        /* Adjust font sizes for mobile */
+        h1, h2, h3 {
+            font-size: 1.2em !important;
+        }
+        
+        /* Better spacing on mobile */
+        .block-container {
+            padding: 1rem !important;
+        }
+    }
+    
+    /* Tablet size adjustments */
+    @media only screen and (min-width: 769px) and (max-width: 1024px) {
+        .main-header {
+            font-size: 40px;
+        }
+    }
+    
+    /* High contrast mode for accessibility */
+    @media (prefers-contrast: high) {
+        .main-header {
+            border: 2px solid currentColor;
+            padding: 15px;
+        }
+        
+        .stMetric {
+            border: 1px solid currentColor;
+        }
     }
 </style>
 """, unsafe_allow_html=True)
