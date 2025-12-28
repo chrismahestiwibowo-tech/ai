@@ -632,7 +632,7 @@ try:
             ]
         }
         tomorrow_df = pd.DataFrame(tomorrow_data)
-        st.dataframe(tomorrow_df, width="wide", hide_index=True)
+        st.dataframe(tomorrow_df, hide_index=True)
         
         # 30-day forecast comparison
         st.subheader("📊 30-Day Average Forecast Comparison")
@@ -662,7 +662,7 @@ try:
         with col1:
             st.markdown("### 📈 Model Rankings (by RMSE)")
             st.dataframe(results_df.style.format({'rmse': '{:.4f}'}), 
-                        width="wide", hide_index=True)
+                        hide_index=True)
             
             st.success(f"🏆 Most Accurate Prediction Model (RMSE: {best_rmse:.4f})")
             
@@ -746,7 +746,7 @@ try:
             ]
         }
         benchmark_df = pd.DataFrame(benchmark_data)
-        st.dataframe(benchmark_df, width="wide", hide_index=True)
+        st.dataframe(benchmark_df, hide_index=True)
         
         # Visualizations
         st.markdown("### 📊 Benchmark Visualizations")
