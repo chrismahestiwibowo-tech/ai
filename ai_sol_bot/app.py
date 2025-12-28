@@ -408,7 +408,7 @@ try:
     current_price = get_current_price()
     
     # Train models
-    with st.spinner("🤖 Training and learning the data with our machines..."):
+    with st.spinner("🤖 Training and learning the data with our machines, please wait a moment..."):
         # LinearRegression + Prophet
         lrm, model_prophet, df_lrm, X_train_lr, X_test_lr, y_train_lr, y_test_lr = train_models(df)
         forecast_lrm, future_predictions_prophet = generate_forecast(model_prophet, df_lrm, forecast_days)
@@ -463,25 +463,25 @@ try:
     with col2:
         next_price_prophet = future_predictions_prophet.iloc[0]['yhat']
         change = next_price_prophet - current_price
-        st.metric("🔮 Prophet Prediction", f"${next_price_prophet:.2f}", 
+        st.metric("🌸 Orchid", f"${next_price_prophet:.2f}", 
                  f"{change:+.2f} ({(change/current_price*100):+.2f}%)")
     
     with col3:
         next_price_xgb = future_predictions_xgb.iloc[0]['yhat']
         change_xgb = next_price_xgb - current_price
-        st.metric("⚡ Advanced Model", f"${next_price_xgb:.2f}",
+        st.metric("🌼 Jasmine", f"${next_price_xgb:.2f}",
                  f"{change_xgb:+.2f} ({(change_xgb/current_price*100):+.2f}%)")
     
     with col4:
         next_price_lstm = future_predictions_lstm.iloc[0]['yhat']
         change_lstm = next_price_lstm - current_price
-        st.metric("🧠 LSTM Prediction", f"${next_price_lstm:.2f}",
+        st.metric("🌺 Bougainvillea", f"${next_price_lstm:.2f}",
                  f"{change_lstm:+.2f} ({(change_lstm/current_price*100):+.2f}%)")
     
     with col5:
         avg_next = (next_price_prophet + next_price_xgb + next_price_lstm) / 3
         avg_change = avg_next - current_price
-        st.metric("📊 Ensemble Avg", f"${avg_next:.2f}",
+        st.metric("📊 Ensemble", f"${avg_next:.2f}",
                  f"{avg_change:+.2f} ({(avg_change/current_price*100):+.2f}%)")
     
     # Tabs
