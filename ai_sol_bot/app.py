@@ -640,15 +640,15 @@ try:
         
         with col_a:
             avg_30d_prophet = future_predictions_prophet.head(30)['yhat'].mean()
-            st.metric("Prophet 30-Day Avg", f"${avg_30d_prophet:.2f}")
+            st.metric("🌸 Orchid 30-Day Avg", f"${avg_30d_prophet:.2f}")
         
         with col_b:
             avg_30d_xgb = future_predictions_xgb.head(30)['yhat'].mean()
-            st.metric("XGBoost 30-Day Avg", f"${avg_30d_xgb:.2f}")
+            st.metric("🌼 Jasmine 30-Day Avg", f"${avg_30d_xgb:.2f}")
         
         with col_c:
             avg_30d_lstm = future_predictions_lstm.head(30)['yhat'].mean()
-            st.metric("LSTM 30-Day Avg", f"${avg_30d_lstm:.2f}")
+            st.metric("🌺 Bougainvillea 30-Day Avg", f"${avg_30d_lstm:.2f}")
         
         with col_d:
             avg_30d_ensemble = (avg_30d_prophet + avg_30d_xgb + avg_30d_lstm) / 3
