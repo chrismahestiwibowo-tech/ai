@@ -9,21 +9,26 @@ from sklearn.linear_model import LinearRegression
 from sklearn.metrics import mean_squared_error, mean_absolute_percentage_error
 from sklearn.preprocessing import MinMaxScaler
 from prophet import Prophet
-import openai
-from openai import OpenAI
 from xgboost import XGBRegressor
-import tensorflow as tf
-from tensorflow import keras
-from tensorflow.keras.models import Sequential
-from tensorflow.keras.layers import LSTM, Dense, Dropout
+
+# Try to import TensorFlow, but make it optional for Python 3.14+
+try:
+    import tensorflow as tf
+    from tensorflow import keras
+    from tensorflow.keras.models import Sequential
+    from tensorflow.keras.layers import LSTM, Dense, Dropout
+    TENSORFLOW_AVAILABLE = True
+except ImportError:
+    TENSORFLOW_AVAILABLE = False
+    st.warning("⚠️ TensorFlow is not available (requires Python 3.12 or earlier). LSTM model will be disabled.")
+
 import warnings
-import os
 warnings.filterwarnings('ignore')
 
 # Page configuration
 st.set_page_config(
-    page_title="SOL Price Prediction Dashboard",
-    page_icon="📈",
+    page_title="☀️ SOL Price Prediction Dashboard",
+    page_icon="☀️",
     layout="wide",
     initial_sidebar_state="expanded"
 )
@@ -31,120 +36,28 @@ st.set_page_config(
 # Custom CSS
 st.markdown("""
 <style>
-    /* Light mode (default) */
     .main-header {
         font-size: 48px;
         font-weight: bold;
         color: #1f77b4;
         text-align: center;
         margin-bottom: 30px;
-        padding: 10px;
     }
-    
     .metric-card {
         background-color: #f0f2f6;
         padding: 20px;
         border-radius: 10px;
         box-shadow: 2px 2px 5px rgba(0,0,0,0.1);
     }
-    
     .stMetric {
         background-color: white;
         padding: 15px;
         border-radius: 8px;
     }
-    
-    /* Dark mode support */
-    @media (prefers-color-scheme: dark) {
-        .main-header {
-            color: #66b3ff;
-            text-shadow: 0 0 10px rgba(102, 179, 255, 0.3);
-        }
-        
-        .metric-card {
-            background-color: #1e1e1e;
-            box-shadow: 2px 2px 5px rgba(255,255,255,0.1);
-        }
-        
-        .stMetric {
-            background-color: #2d2d2d !important;
-            color: #ffffff !important;
-        }
-        
-        /* Ensure text is readable in dark mode */
-        .stMarkdown, .stText {
-            color: #e0e0e0 !important;
-        }
-        
-        /* Table styling for dark mode */
-        .dataframe {
-            background-color: #2d2d2d !important;
-            color: #ffffff !important;
-        }
-        
-        /* Info boxes in dark mode */
-        .stAlert {
-            background-color: #2d2d2d !important;
-            border-color: #66b3ff !important;
-        }
-    }
-    
-    /* Mobile responsive design */
-    @media only screen and (max-width: 768px) {
-        .main-header {
-            font-size: 32px !important;
-            margin-bottom: 20px;
-        }
-        
-        .stMetric {
-            padding: 10px !important;
-            margin-bottom: 10px;
-        }
-        
-        /* Ensure metrics stack nicely on mobile */
-        [data-testid="column"] {
-            padding: 5px !important;
-        }
-        
-        /* Make charts responsive */
-        .stPlotlyChart, .stPyplot {
-            width: 100% !important;
-            height: auto !important;
-        }
-        
-        /* Adjust font sizes for mobile */
-        h1, h2, h3 {
-            font-size: 1.2em !important;
-        }
-        
-        /* Better spacing on mobile */
-        .block-container {
-            padding: 1rem !important;
-        }
-    }
-    
-    /* Tablet size adjustments */
-    @media only screen and (min-width: 769px) and (max-width: 1024px) {
-        .main-header {
-            font-size: 40px;
-        }
-    }
-    
-    /* High contrast mode for accessibility */
-    @media (prefers-contrast: high) {
-        .main-header {
-            border: 2px solid currentColor;
-            padding: 15px;
-        }
-        
-        .stMetric {
-            border: 1px solid currentColor;
-        }
-    }
 </style>
 """, unsafe_allow_html=True)
 
-# API Key (use environment variable for security)
+# Azure Foundry API Key (hidden from UI) & (use environment variable for security)
 api_key = os.getenv("OPENAI_API_KEY", "")
 if not api_key:
     st.sidebar.warning("⚠️ OpenAI API key not found. Set OPENAI_API_KEY environment variable for AI analysis.")
@@ -181,31 +94,41 @@ def load_sol_data(years=1):
         years (int): Number of years of historical data to load (1-3)
     """
     with st.spinner(f"📥 Loading {years} year{'s' if years > 1 else ''} of SOL data..."):
-        df = yf.Ticker('SOL-USD').history(period=f'{years}y')
-        df = df.reset_index()
-        df['ds'] = df['Date'].dt.tz_localize(None)
-        
-        # Basic features
-        df['X'] = df['Open']
-        df['y'] = df['Close']
-        df['High'] = df['High']
-        df['Low'] = df['Low']
-        df['Volume'] = df['Volume']
-        
-        # Technical indicators
-        df['MA7'] = df['Close'].rolling(window=7).mean()
-        df['MA21'] = df['Close'].rolling(window=21).mean()
-        df['MA50'] = df['Close'].rolling(window=50).mean()
-        df['RSI'] = calculate_rsi(df['Close'], 14)
-        df['MACD'] = df['Close'].ewm(span=12).mean() - df['Close'].ewm(span=26).mean()
-        df['Price_Range'] = df['High'] - df['Low']
-        df['Daily_Return'] = df['Close'].pct_change()
-        df['Volatility'] = df['Daily_Return'].rolling(window=20).std()
-        
-        # Fill NaN values
-        df = df.fillna(method='bfill').fillna(method='ffill')
-        
-        return df
+        try:
+            ticker = yf.Ticker('SOL-USD')
+            df = ticker.history(period=f'{years}y')
+            
+            if df is None or df.empty:
+                st.error("Failed to fetch SOL data from Yahoo Finance. Please check your internet connection.")
+                return None
+                
+            df = df.reset_index()
+            df['ds'] = df['Date'].dt.tz_localize(None)
+            
+            # Basic features
+            df['X'] = df['Open']
+            df['y'] = df['Close']
+            df['High'] = df['High']
+            df['Low'] = df['Low']
+            df['Volume'] = df['Volume']
+            
+            # Technical indicators
+            df['MA7'] = df['Close'].rolling(window=7).mean()
+            df['MA21'] = df['Close'].rolling(window=21).mean()
+            df['MA50'] = df['Close'].rolling(window=50).mean()
+            df['RSI'] = calculate_rsi(df['Close'], 14)
+            df['MACD'] = df['Close'].ewm(span=12).mean() - df['Close'].ewm(span=26).mean()
+            df['Price_Range'] = df['High'] - df['Low']
+            df['Daily_Return'] = df['Close'].pct_change()
+            df['Volatility'] = df['Daily_Return'].rolling(window=20).std()
+            
+            # Fill NaN values
+            df = df.fillna(method='bfill').fillna(method='ffill')
+            
+            return df
+        except Exception as e:
+            st.error(f"Error loading SOL data: {str(e)}")
+            return None
 
 def calculate_rsi(prices, period=14):
     """Calculate Relative Strength Index"""
@@ -219,9 +142,19 @@ def calculate_rsi(prices, period=14):
 @st.cache_data
 def get_current_price():
     """Get current SOL price"""
-    current_sol = yf.Ticker('SOL-USD')
-    current_price = current_sol.history(period='1d')['Close'].iloc[-1]
-    return current_price
+    try:
+        current_sol = yf.Ticker('SOL-USD')
+        history = current_sol.history(period='1d')
+        
+        if history is None or history.empty:
+            st.warning("Could not fetch current price. Using latest historical price.")
+            return None
+            
+        current_price = history['Close'].iloc[-1]
+        return current_price
+    except Exception as e:
+        st.error(f"Error fetching current price: {str(e)}")
+        return None
 
 @st.cache_data
 def train_models(_df):
@@ -273,6 +206,10 @@ def train_xgboost_model(df):
 
 def train_lstm_model(df, lookback=60):
     """Train LSTM model"""
+    if not TENSORFLOW_AVAILABLE:
+        # Return dummy values if TensorFlow is not available
+        return None, None, None, None, None, None, lookback
+    
     # Prepare data
     data = df[['Close']].values
     scaler = MinMaxScaler(feature_range=(0, 1))
@@ -349,6 +286,17 @@ def generate_xgb_forecast(xgb_model, df, feature_cols, periods):
 
 def generate_lstm_forecast(lstm_model, scaler, df, lookback, periods):
     """Generate LSTM forecast"""
+    if not TENSORFLOW_AVAILABLE or lstm_model is None:
+        # Return empty forecast if TensorFlow is not available
+        future_dates = pd.date_range(start=df['ds'].iloc[-1] + pd.Timedelta(days=1), periods=periods)
+        current_price = df['Close'].iloc[-1]
+        return pd.DataFrame({
+            'ds': future_dates,
+            'yhat': [current_price] * periods,
+            'yhat_lower': [current_price * 0.92] * periods,
+            'yhat_upper': [current_price * 1.08] * periods
+        })
+    
     # Get last lookback values
     last_data = df[['Close']].tail(lookback).values
     scaled_data = scaler.transform(last_data)
@@ -382,22 +330,23 @@ def calculate_model_metrics(lrm, xgb_model, lstm_model, scaler, X_train_lr, X_te
     """Calculate metrics for all models"""
     results = []
     
-    # LinearRegression → Orchid
+    # LinearRegression
     y_pred_lr = lrm.predict(X_test_lr)
     rmse_lr = np.sqrt(mean_squared_error(y_test_lr, y_pred_lr))
-    results.append({'model': 'Orchid', 'rmse': rmse_lr, 'rank': 0})
+    results.append({'model': '🌸 Orchid', 'rmse': rmse_lr, 'rank': 0})
     
-    # XGBoost → Jasmine
+    # XGBoost
     y_pred_xgb = xgb_model.predict(X_test_xgb)
     rmse_xgb = np.sqrt(mean_squared_error(y_test_xgb, y_pred_xgb))
-    results.append({'model': 'Jasmine', 'rmse': rmse_xgb, 'rank': 0})
+    results.append({'model': '🌼 Jasmine', 'rmse': rmse_xgb, 'rank': 0})
     
-    # LSTM → Bougainvillea
-    y_pred_lstm_scaled = lstm_model.predict(X_test_lstm, verbose=0)
-    y_pred_lstm = scaler.inverse_transform(y_pred_lstm_scaled).flatten()
-    y_test_lstm_actual = scaler.inverse_transform(y_test_lstm.reshape(-1, 1)).flatten()
-    rmse_lstm = np.sqrt(mean_squared_error(y_test_lstm_actual, y_pred_lstm))
-    results.append({'model': 'Bougainvillea', 'rmse': rmse_lstm, 'rank': 0})
+    # LSTM (only if TensorFlow is available)
+    if TENSORFLOW_AVAILABLE and lstm_model is not None:
+        y_pred_lstm_scaled = lstm_model.predict(X_test_lstm, verbose=0)
+        y_pred_lstm = scaler.inverse_transform(y_pred_lstm_scaled).flatten()
+        y_test_lstm_actual = scaler.inverse_transform(y_test_lstm.reshape(-1, 1)).flatten()
+        rmse_lstm = np.sqrt(mean_squared_error(y_test_lstm_actual, y_pred_lstm))
+        results.append({'model': '🌺 Bougainvillea', 'rmse': rmse_lstm, 'rank': 0})
     
     results_df = pd.DataFrame(results)
     results_df = results_df.sort_values('rmse')
@@ -497,10 +446,19 @@ def classify_rmse_performance(rmse_pct):
 # Load data
 try:
     df = load_sol_data(historical_years)
+    
+    if df is None:
+        st.stop()
+    
     current_price = get_current_price()
     
+    if current_price is None:
+        # Use latest historical price if current price fetch fails
+        current_price = df['Close'].iloc[-1]
+        st.info(f"Using latest historical price: ${current_price:.2f}")
+    
     # Train models
-    with st.spinner("🤖 Training and learning the data with our machines, please wait a moment..."):
+    with st.spinner("🤖 Training and learning the data with our machines..."):
         # LinearRegression + Prophet
         lrm, model_prophet, df_lrm, X_train_lr, X_test_lr, y_train_lr, y_test_lr = train_models(df)
         forecast_lrm, future_predictions_prophet = generate_forecast(model_prophet, df_lrm, forecast_days)
@@ -526,18 +484,18 @@ try:
     # Use the best performing model for advanced metrics
     with st.spinner(f"📊 Calculating advanced benchmarks using {best_model_name}..."):
         # Select forecast based on best model
-        if best_model_name == 'Jasmine':  # XGBoost
+        if best_model_name == '🌼 Jasmine':
             # Create forecast dataframe for XGBoost historical predictions
             xgb_historical = xgb_model.predict(df[['Open', 'High', 'Low', 'Volume', 'MA7', 'MA21', 'MA50', 'RSI', 'MACD', 'Price_Range', 'Volatility']].dropna())
             df_clean = df.dropna()
             df_best = pd.DataFrame({'ds': df_clean['ds'], 'yhat': xgb_historical})
             forecast_best = pd.concat([df_best, future_predictions_xgb.rename(columns={'yhat': 'yhat'})], ignore_index=True)
             best_forecast = future_predictions_xgb
-        elif best_model_name == 'Bougainvillea':  # LSTM
+        elif best_model_name == '🌺 Bougainvillea':
             # Use LSTM predictions
             best_forecast = future_predictions_lstm
             forecast_best = forecast_lrm  # Use prophet structure for compatibility
-        else:  # Orchid (Linear Regression)
+        else:  # Linear Regression
             best_forecast = future_predictions_prophet
             forecast_best = forecast_lrm
         
@@ -555,25 +513,25 @@ try:
     with col2:
         next_price_prophet = future_predictions_prophet.iloc[0]['yhat']
         change = next_price_prophet - current_price
-        st.metric("🌸 Orchid", f"${next_price_prophet:.2f}", 
+        st.metric("🔮 Prophet Prediction", f"${next_price_prophet:.2f}", 
                  f"{change:+.2f} ({(change/current_price*100):+.2f}%)")
     
     with col3:
         next_price_xgb = future_predictions_xgb.iloc[0]['yhat']
         change_xgb = next_price_xgb - current_price
-        st.metric("🌼 Jasmine", f"${next_price_xgb:.2f}",
+        st.metric("� XGBoost Prediction", f"${next_price_xgb:.2f}",
                  f"{change_xgb:+.2f} ({(change_xgb/current_price*100):+.2f}%)")
     
     with col4:
         next_price_lstm = future_predictions_lstm.iloc[0]['yhat']
         change_lstm = next_price_lstm - current_price
-        st.metric("🌺 Bougainvillea", f"${next_price_lstm:.2f}",
+        st.metric("🧠 LSTM Prediction", f"${next_price_lstm:.2f}",
                  f"{change_lstm:+.2f} ({(change_lstm/current_price*100):+.2f}%)")
     
     with col5:
         avg_next = (next_price_prophet + next_price_xgb + next_price_lstm) / 3
         avg_change = avg_next - current_price
-        st.metric("📊 Ensemble", f"${avg_next:.2f}",
+        st.metric("📊 Ensemble Avg", f"${avg_next:.2f}",
                  f"{avg_change:+.2f} ({(avg_change/current_price*100):+.2f}%)")
     
     # Tabs
@@ -587,13 +545,13 @@ try:
         
         fig, ax = plt.subplots(figsize=(16, 8))
         ax.plot(df['ds'], df['y'], label='Actual Prices', color='blue', linewidth=2.5, marker='o', markersize=2)
-        ax.plot(df['ds'], lrm_historical_predictions, label='🌸 Orchid Fit', color='green', linewidth=1.5, linestyle='--', alpha=0.7)
-        ax.plot(forecast_lrm['ds'][:len(df)], forecast_lrm['yhat'][:len(df)], label='Prophet (on Orchid)', color='orange', linewidth=1.5, linestyle=':')
+        ax.plot(df['ds'], lrm_historical_predictions, label='LinearRegression Fit', color='green', linewidth=1.5, linestyle='--', alpha=0.7)
+        ax.plot(forecast_lrm['ds'][:len(df)], forecast_lrm['yhat'][:len(df)], label='Prophet (on LRM)', color='orange', linewidth=1.5, linestyle=':')
         
         # Future forecasts
-        ax.plot(future_predictions_prophet['ds'], future_predictions_prophet['yhat'], label='🌸 Orchid Forecast', color='red', linewidth=2)
-        ax.plot(future_predictions_xgb['ds'], future_predictions_xgb['yhat'], label='🌼 Jasmine Forecast', color='purple', linewidth=2)
-        ax.plot(future_predictions_lstm['ds'], future_predictions_lstm['yhat'], label='🌺 Bougainvillea Forecast', color='magenta', linewidth=2)
+        ax.plot(future_predictions_prophet['ds'], future_predictions_prophet['yhat'], label='Prophet Forecast', color='red', linewidth=2)
+        ax.plot(future_predictions_xgb['ds'], future_predictions_xgb['yhat'], label='XGBoost Forecast', color='purple', linewidth=2)
+        ax.plot(future_predictions_lstm['ds'], future_predictions_lstm['yhat'], label='LSTM Forecast', color='magenta', linewidth=2)
         
         # Ensemble average
         ensemble_forecast = (future_predictions_prophet['yhat'].values + future_predictions_xgb['yhat'].values + future_predictions_lstm['yhat'].values) / 3
@@ -611,7 +569,7 @@ try:
         # Model comparison table
         st.subheader("📋 Tomorrow's Predictions - All Models")
         tomorrow_data = {
-            'Model': ['🌸 Orchid', '🌼 Jasmine', '🌺 Bougainvillea', 'Ensemble Average'],
+            'Model': ['🌸 Orchid', '🌼 Jasmine', '🌺 Bougainvillea', '🌿 Ensemble'],
             'Predicted Price': [
                 f'${next_price_prophet:.2f}',
                 f'${next_price_xgb:.2f}',
@@ -627,12 +585,12 @@ try:
             'Confidence Range': [
                 f"${future_predictions_prophet.iloc[0]['yhat_lower']:.2f} - ${future_predictions_prophet.iloc[0]['yhat_upper']:.2f}",
                 f"${future_predictions_xgb.iloc[0]['yhat_lower']:.2f} - ${future_predictions_xgb.iloc[0]['yhat_upper']:.2f}",
-                f"${future_predictions_lstm.iloc[0]['yhat_lower']:.2f} - ${future_predictions_lstm.iloc[0]['yhat_upper']:.2f}",
+                f"${future_predictions_lstm.iloc[0]['yhat_lower']:.2f} - ${future_predictions_lstm.iloc[0]['yhat_upbper']:.2f}",
                 "Composite of all models"
             ]
         }
         tomorrow_df = pd.DataFrame(tomorrow_data)
-        st.dataframe(tomorrow_df, hide_index=True)
+        st.dataframe(tomorrow_df, use_container_width=True, hide_index=True)
         
         # 30-day forecast comparison
         st.subheader("📊 30-Day Average Forecast Comparison")
@@ -640,15 +598,15 @@ try:
         
         with col_a:
             avg_30d_prophet = future_predictions_prophet.head(30)['yhat'].mean()
-            st.metric("🌸 Orchid 30-Day Avg", f"${avg_30d_prophet:.2f}")
+            st.metric("Prophet 30-Day Avg", f"${avg_30d_prophet:.2f}")
         
         with col_b:
             avg_30d_xgb = future_predictions_xgb.head(30)['yhat'].mean()
-            st.metric("🌼 Jasmine 30-Day Avg", f"${avg_30d_xgb:.2f}")
+            st.metric("XGBoost 30-Day Avg", f"${avg_30d_xgb:.2f}")
         
         with col_c:
             avg_30d_lstm = future_predictions_lstm.head(30)['yhat'].mean()
-            st.metric("🌺 Bougainvillea 30-Day Avg", f"${avg_30d_lstm:.2f}")
+            st.metric("LSTM 30-Day Avg", f"${avg_30d_lstm:.2f}")
         
         with col_d:
             avg_30d_ensemble = (avg_30d_prophet + avg_30d_xgb + avg_30d_lstm) / 3
@@ -662,17 +620,17 @@ try:
         with col1:
             st.markdown("### 📈 Model Rankings (by RMSE)")
             st.dataframe(results_df.style.format({'rmse': '{:.4f}'}), 
-                        hide_index=True)
+                        use_container_width=True, hide_index=True)
             
             st.success(f"🏆 Most Accurate Prediction Model (RMSE: {best_rmse:.4f})")
             
-            st.markdown("### 🌺 Prediction Models")
+            st.markdown("### 🔍 Model Descriptions")
             st.markdown("""
-            - **🌸 Orchid**: Elegant baseline approach
-            - **🌼 Jasmine**: Advanced multi-feature analysis
-            - **🌺 Bougainvillea**: Deep pattern recognition
+            - **🌸 Orchid (Linear Regression + Prophet)**: Elegant baseline using opening price with time-series forecasting
+            - **🌼 Jasmine (XGBoost)**: Advanced model with 11 technical indicators (MA7, MA21, MA50, RSI, MACD, etc.)
+            - **🌺 Bougainvillea (LSTM)**: Deep learning with 60-day price history pattern recognition
             
-            *See README.md for technical model details*
+            *Flower names represent different model characteristics - just as each flower has unique beauty, each model has unique strengths.*
             """)
         
         with col2:
@@ -746,7 +704,7 @@ try:
             ]
         }
         benchmark_df = pd.DataFrame(benchmark_data)
-        st.dataframe(benchmark_df, hide_index=True)
+        st.dataframe(benchmark_df, use_container_width=True, hide_index=True)
         
         # Visualizations
         st.markdown("### 📊 Benchmark Visualizations")
@@ -988,7 +946,13 @@ try:
         
         with st.spinner("🧠 Generating AI analysis..."):
             try:
-                client = OpenAI(api_key=api_key)
+                from openai import OpenAI
+                
+                # Azure AI Foundry uses standard OpenAI client with base_url
+                client = OpenAI(
+                    api_key=api_key,
+                    base_url=azure_endpoint
+                )
                 
                 # Prepare analysis context
                 next_price_best = best_forecast.iloc[0]['yhat'] if len(best_forecast) > 0 else current_price
@@ -1014,7 +978,7 @@ try:
 - Directional Accuracy: {metrics['directional_accuracy']:.1f}%
 - Improvement vs Baseline: {metrics['improvement_vs_naive']:+.2f}%
 
-Provide a comprehensive analysis covering:
+Provide your analysis in simple bullet points covering these 5 areas:
 
 1. **Trading Signal** (BUY/HOLD/SELL with confidence level)
 2. **Entry/Exit Strategy** (specific price targets and timing)
@@ -1025,18 +989,18 @@ Provide a comprehensive analysis covering:
 Be specific, data-driven, and practical. Format your response clearly with sections."""
 
                 response = client.chat.completions.create(
-                    model="gpt-4",
+                    model="Phi-4-reasoning",
                     messages=[
                         {"role": "system", "content": "You are an expert cryptocurrency trading analyst specializing in SOL/Solana. Provide clear, actionable trading insights based on quantitative data."},
                         {"role": "user", "content": prompt}
                     ],
                     temperature=0.7,
-                    max_tokens=1500
+                    max_tokens=800
                 )
                 
                 gpt_analysis = response.choices[0].message.content
                 
-                # Display GPT Analysis
+                # Display Ai Analysis
                 st.markdown("#### 📊 AI Trading Insights")
                 st.markdown(gpt_analysis)
                 
@@ -1045,7 +1009,7 @@ Be specific, data-driven, and practical. Format your response clearly with secti
                 st.info("Displaying model predictions without AI interpretation.")
         
         # Show Prophet components if using Prophet-based model
-        if best_model_name == 'Orchid':  # Linear Regression + Prophet
+        if best_model_name == '🌸 Orchid':
             st.markdown("---")
             st.markdown("### 📊 Forecast Components (Time Series Decomposition)")
             fig_components = model_prophet.plot_components(forecast_lrm)
@@ -1059,8 +1023,8 @@ except Exception as e:
 st.markdown("---")
 st.markdown("""
 <div style='text-align: center; color: #888;'>
-    <p>☀️ SOL Price Prediction Dashboard | Developed by <a href='https://github.com/chrismahestiwibowo-tech' target='_blank'>@chrismahestiwibowo-tech</a></p>
-    <p>📚 See README.md for multi-model technical details and feature explanations</p>
+    <p>☀️ SOL Price Prediction Dashboard | 🌸 Orchid • 🌼 Jasmine • 🌺 Bougainvillea</p>
     <p>⚠️ Disclaimer: This is for educational purposes only. Not financial advice.</p>
+    <p style='font-size: 0.9em; margin-top: 10px;'>Built with ❤️ using Streamlit, XGBoost, LSTM, Prophet & Phi-4</p>
 </div>
 """, unsafe_allow_html=True)
