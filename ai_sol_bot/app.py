@@ -58,10 +58,16 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
-# Azure Foundry API Key (hidden from UI) & (use environment variable for security)
-api_key = os.getenv("OPENAI_API_KEY", "")
+# Azure Foundry API Key - Use Streamlit secrets for security
+try:
+    api_key = st.secrets.get("OPENAI_API_KEY", os.getenv("OPENAI_API_KEY", ""))
+    azure_endpoint = st.secrets.get("AZURE_ENDPOINT", "https://chrismawibowo-251229-resource.services.ai.azure.com/models")
+except:
+    api_key = os.getenv("OPENAI_API_KEY", "")
+    azure_endpoint = "https://chrismawibowo-251229-resource.services.ai.azure.com/models"
+
 if not api_key:
-    st.sidebar.warning("⚠️ OpenAI API key not found. Set OPENAI_API_KEY environment variable for AI analysis.")
+    st.sidebar.warning("⚠️ Azure API key not configured. Set it in Streamlit secrets or environment variables.")
 
 # Sidebar
 st.sidebar.title("⚙️ Configuration")
