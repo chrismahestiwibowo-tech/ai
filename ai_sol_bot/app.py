@@ -40,20 +40,26 @@ st.markdown("""
     .main-header {
         font-size: 48px;
         font-weight: bold;
-        color: #1f77b4;
+        color: #4da6ff;
         text-align: center;
         margin-bottom: 30px;
+        text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
     }
     .metric-card {
-        background-color: #f0f2f6;
+        background-color: rgba(240, 242, 246, 0.1);
         padding: 20px;
         border-radius: 10px;
-        box-shadow: 2px 2px 5px rgba(0,0,0,0.1);
+        box-shadow: 2px 2px 5px rgba(0,0,0,0.3);
+        border: 1px solid rgba(255,255,255,0.1);
     }
     .stMetric {
-        background-color: white;
+        background-color: rgba(255, 255, 255, 0.05);
         padding: 15px;
         border-radius: 8px;
+        border: 1px solid rgba(255,255,255,0.1);
+    }
+    [data-testid="stMetricValue"] {
+        color: #4da6ff;
     }
 </style>
 """, unsafe_allow_html=True)
@@ -592,7 +598,7 @@ try:
             'Confidence Range': [
                 f"${future_predictions_prophet.iloc[0]['yhat_lower']:.2f} - ${future_predictions_prophet.iloc[0]['yhat_upper']:.2f}",
                 f"${future_predictions_xgb.iloc[0]['yhat_lower']:.2f} - ${future_predictions_xgb.iloc[0]['yhat_upper']:.2f}",
-                f"${future_predictions_lstm.iloc[0]['yhat_lower']:.2f} - ${future_predictions_lstm.iloc[0]['yhat_upbper']:.2f}",
+                f"${future_predictions_lstm.iloc[0]['yhat_lower']:.2f} - ${future_predictions_lstm.iloc[0]['yhat_upper']:.2f}",
                 "Composite of all models"
             ]
         }
