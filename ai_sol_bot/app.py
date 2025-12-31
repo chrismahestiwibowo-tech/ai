@@ -34,32 +34,192 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# Custom CSS
+# Custom CSS with responsive design and dark/light theme support
 st.markdown("""
 <style>
+    /* ===== RESPONSIVE & THEME VARIABLES ===== */
+    :root {
+        --header-size: 48px;
+        --padding-base: 20px;
+        --border-radius: 10px;
+    }
+    
+    /* Dark theme (default for Streamlit dark mode) */
+    @media (prefers-color-scheme: dark) {
+        :root {
+            --bg-primary: rgba(14, 17, 23, 1);
+            --bg-secondary: rgba(38, 39, 48, 0.8);
+            --bg-card: rgba(240, 242, 246, 0.1);
+            --text-primary: #ffffff;
+            --text-secondary: #a0a0a0;
+            --accent-color: #4da6ff;
+            --border-color: rgba(255, 255, 255, 0.1);
+            --shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
+        }
+    }
+    
+    /* Light theme */
+    @media (prefers-color-scheme: light) {
+        :root {
+            --bg-primary: #ffffff;
+            --bg-secondary: #f0f2f6;
+            --bg-card: rgba(0, 0, 0, 0.02);
+            --text-primary: #0e1117;
+            --text-secondary: #555555;
+            --accent-color: #0066cc;
+            --border-color: rgba(0, 0, 0, 0.1);
+            --shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
+        }
+    }
+    
+    /* ===== RESPONSIVE TYPOGRAPHY ===== */
     .main-header {
-        font-size: 48px;
+        font-size: var(--header-size);
         font-weight: bold;
-        color: #4da6ff;
+        color: var(--accent-color);
         text-align: center;
         margin-bottom: 30px;
-        text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        text-shadow: var(--shadow);
+        transition: all 0.3s ease;
     }
+    
+    /* ===== RESPONSIVE CARDS ===== */
     .metric-card {
-        background-color: rgba(240, 242, 246, 0.1);
-        padding: 20px;
-        border-radius: 10px;
-        box-shadow: 2px 2px 5px rgba(0,0,0,0.3);
-        border: 1px solid rgba(255,255,255,0.1);
+        background-color: var(--bg-card);
+        padding: var(--padding-base);
+        border-radius: var(--border-radius);
+        box-shadow: var(--shadow);
+        border: 1px solid var(--border-color);
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
     }
+    
+    .metric-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.2);
+    }
+    
     .stMetric {
-        background-color: rgba(255, 255, 255, 0.05);
+        background-color: var(--bg-card);
         padding: 15px;
         border-radius: 8px;
-        border: 1px solid rgba(255,255,255,0.1);
+        border: 1px solid var(--border-color);
     }
+    
     [data-testid="stMetricValue"] {
-        color: #4da6ff;
+        color: var(--accent-color);
+        font-size: clamp(1.2rem, 3vw, 2rem);
+    }
+    
+    /* ===== MOBILE RESPONSIVE (< 768px) ===== */
+    @media only screen and (max-width: 768px) {
+        :root {
+            --header-size: 28px;
+            --padding-base: 12px;
+            --border-radius: 8px;
+        }
+        
+        .main-header {
+            font-size: 28px !important;
+            margin-bottom: 20px;
+            padding: 10px;
+        }
+        
+        .metric-card {
+            padding: 12px;
+            margin-bottom: 10px;
+        }
+        
+        [data-testid="stMetricValue"] {
+            font-size: 1.5rem !important;
+        }
+        
+        /* Stack columns on mobile */
+        [data-testid="column"] {
+            width: 100% !important;
+            margin-bottom: 1rem;
+        }
+        
+        /* Better button sizing for mobile */
+        .stButton > button {
+            width: 100%;
+            padding: 12px;
+            font-size: 14px;
+        }
+        
+        /* Sidebar adjustments */
+        [data-testid="stSidebar"] {
+            width: 100%;
+        }
+        
+        /* Smaller font sizes for mobile */
+        body {
+            font-size: 14px;
+        }
+    }
+    
+    /* ===== TABLET RESPONSIVE (768px - 1024px) ===== */
+    @media only screen and (min-width: 768px) and (max-width: 1024px) {
+        :root {
+            --header-size: 36px;
+            --padding-base: 16px;
+        }
+        
+        .main-header {
+            font-size: 36px !important;
+        }
+        
+        [data-testid="stMetricValue"] {
+            font-size: 1.8rem !important;
+        }
+    }
+    
+    /* ===== DESKTOP RESPONSIVE (> 1024px) ===== */
+    @media only screen and (min-width: 1024px) {
+        .main-header {
+            font-size: 48px;
+        }
+    }
+    
+    /* ===== GENERAL RESPONSIVE ELEMENTS ===== */
+    /* Make tables responsive */
+    .dataframe {
+        width: 100%;
+        overflow-x: auto;
+        display: block;
+    }
+    
+    /* Responsive images and plots */
+    img, canvas {
+        max-width: 100%;
+        height: auto;
+    }
+    
+    /* Better spacing on all devices */
+    .block-container {
+        padding: clamp(1rem, 3vw, 3rem);
+        max-width: 100%;
+    }
+    
+    /* Responsive font sizes */
+    body {
+        font-size: clamp(14px, 2vw, 16px);
+    }
+    
+    h1 { font-size: clamp(1.8rem, 4vw, 2.5rem); }
+    h2 { font-size: clamp(1.5rem, 3.5vw, 2rem); }
+    h3 { font-size: clamp(1.2rem, 3vw, 1.75rem); }
+    
+    /* Better touch targets for mobile */
+    @media (hover: none) and (pointer: coarse) {
+        button, a, input, select {
+            min-height: 44px;
+            min-width: 44px;
+        }
+    }
+    
+    /* Smooth transitions for theme changes */
+    * {
+        transition: background-color 0.3s ease, color 0.3s ease;
     }
 </style>
 """, unsafe_allow_html=True)
@@ -526,19 +686,19 @@ try:
     with col2:
         next_price_prophet = future_predictions_prophet.iloc[0]['yhat']
         change = next_price_prophet - current_price
-        st.metric("🔮 Prophet Prediction", f"${next_price_prophet:.2f}", 
+        st.metric("🌸 Orchid Prediction", f"${next_price_prophet:.2f}", 
                  f"{change:+.2f} ({(change/current_price*100):+.2f}%)")
     
     with col3:
         next_price_xgb = future_predictions_xgb.iloc[0]['yhat']
         change_xgb = next_price_xgb - current_price
-        st.metric("� XGBoost Prediction", f"${next_price_xgb:.2f}",
+        st.metric("🌼 Jasmine Prediction", f"${next_price_xgb:.2f}",
                  f"{change_xgb:+.2f} ({(change_xgb/current_price*100):+.2f}%)")
     
     with col4:
         next_price_lstm = future_predictions_lstm.iloc[0]['yhat']
         change_lstm = next_price_lstm - current_price
-        st.metric("🧠 LSTM Prediction", f"${next_price_lstm:.2f}",
+        st.metric("🌺 Bougainvillea Prediction", f"${next_price_lstm:.2f}",
                  f"{change_lstm:+.2f} ({(change_lstm/current_price*100):+.2f}%)")
     
     with col5:
@@ -558,20 +718,20 @@ try:
         
         fig, ax = plt.subplots(figsize=(16, 8))
         ax.plot(df['ds'], df['y'], label='Actual Prices', color='blue', linewidth=2.5, marker='o', markersize=2)
-        ax.plot(df['ds'], lrm_historical_predictions, label='LinearRegression Fit', color='green', linewidth=1.5, linestyle='--', alpha=0.7)
-        ax.plot(forecast_lrm['ds'][:len(df)], forecast_lrm['yhat'][:len(df)], label='Prophet (on LRM)', color='orange', linewidth=1.5, linestyle=':')
+        ax.plot(df['ds'], lrm_historical_predictions, label='🌸 Orchid Fit', color='green', linewidth=1.5, linestyle='--', alpha=0.7)
+        ax.plot(forecast_lrm['ds'][:len(df)], forecast_lrm['yhat'][:len(df)], label='🌸 Orchid (Historical)', color='orange', linewidth=1.5, linestyle=':')
         
         # Future forecasts
-        ax.plot(future_predictions_prophet['ds'], future_predictions_prophet['yhat'], label='Prophet Forecast', color='red', linewidth=2)
-        ax.plot(future_predictions_xgb['ds'], future_predictions_xgb['yhat'], label='XGBoost Forecast', color='purple', linewidth=2)
-        ax.plot(future_predictions_lstm['ds'], future_predictions_lstm['yhat'], label='LSTM Forecast', color='magenta', linewidth=2)
+        ax.plot(future_predictions_prophet['ds'], future_predictions_prophet['yhat'], label='🌸 Orchid Forecast', color='red', linewidth=2)
+        ax.plot(future_predictions_xgb['ds'], future_predictions_xgb['yhat'], label='🌼 Jasmine Forecast', color='purple', linewidth=2)
+        ax.plot(future_predictions_lstm['ds'], future_predictions_lstm['yhat'], label='🌺 Bougainvillea Forecast', color='magenta', linewidth=2)
         
         # Ensemble average
         ensemble_forecast = (future_predictions_prophet['yhat'].values + future_predictions_xgb['yhat'].values + future_predictions_lstm['yhat'].values) / 3
-        ax.plot(future_predictions_prophet['ds'], ensemble_forecast, label='Ensemble Average', color='darkblue', linewidth=2.5, linestyle='-.', alpha=0.8)
+        ax.plot(future_predictions_prophet['ds'], ensemble_forecast, label='🌿 Ensemble Average', color='darkblue', linewidth=2.5, linestyle='-.', alpha=0.8)
         
         ax.fill_between(future_predictions_prophet['ds'], future_predictions_prophet['yhat_lower'], future_predictions_prophet['yhat_upper'], 
-                        alpha=0.15, color='red', label='Prophet Confidence')
+                        alpha=0.15, color='red', label='🌸 Orchid Confidence')
         ax.set_xlabel('Date', fontsize=12)
         ax.set_ylabel('Price ($)', fontsize=12)
         ax.set_title('SOL Price: Multi-Model Forecast Comparison', fontsize=16, fontweight='bold')
@@ -611,15 +771,15 @@ try:
         
         with col_a:
             avg_30d_prophet = future_predictions_prophet.head(30)['yhat'].mean()
-            st.metric("Prophet 30-Day Avg", f"${avg_30d_prophet:.2f}")
+            st.metric("🌸 Orchid 30-Day Avg", f"${avg_30d_prophet:.2f}")
         
         with col_b:
             avg_30d_xgb = future_predictions_xgb.head(30)['yhat'].mean()
-            st.metric("XGBoost 30-Day Avg", f"${avg_30d_xgb:.2f}")
+            st.metric("🌼 Jasmine 30-Day Avg", f"${avg_30d_xgb:.2f}")
         
         with col_c:
             avg_30d_lstm = future_predictions_lstm.head(30)['yhat'].mean()
-            st.metric("LSTM 30-Day Avg", f"${avg_30d_lstm:.2f}")
+            st.metric("🌺 Bougainvillea 30-Day Avg", f"${avg_30d_lstm:.2f}")
         
         with col_d:
             avg_30d_ensemble = (avg_30d_prophet + avg_30d_xgb + avg_30d_lstm) / 3
@@ -635,7 +795,7 @@ try:
             st.dataframe(results_df.style.format({'rmse': '{:.4f}'}), 
                         use_container_width=True, hide_index=True)
             
-            st.success(f"🏆 Most Accurate Prediction Model (RMSE: {best_rmse:.4f})")
+            st.success(f"🏆 {best_model_name} - Most Accurate Model (RMSE: {best_rmse:.4f})")
             
             st.markdown("### 🔍 Model Descriptions")
             st.markdown("""
