@@ -1161,15 +1161,27 @@ Provide your analysis in simple bullet points covering these 5 areas:
 
 Be specific, data-driven, and practical. Format your response clearly with sections."""
 
-                response = client.chat.completions.create(
-                    model="gpt-4",
-                    messages=[
-                        {"role": "system", "content": "You are an expert cryptocurrency trading analyst specializing in SOL/Solana. Provide clear, actionable trading insights based on quantitative data."},
-                        {"role": "user", "content": prompt}
-                    ],
-                    temperature=0.7,
-                    max_tokens=800
-                )
+                # Try different model names (Azure AI Foundry uses specific deployment names)
+                model_names = ["Phi-4", "gpt-4o", "gpt-4o-mini", "gpt-4"]
+                response = None
+                
+                for model_name in model_names:
+                    try:
+                        response = client.chat.completions.create(
+                            model=model_name,
+                            messages=[
+                                {"role": "system", "content": "You are an expert cryptocurrency trading analyst specializing in SOL/Solana. Provide clear, actionable trading insights based on quantitative data."},
+                                {"role": "user", "content": prompt}
+                            ],
+                            temperature=0.7,
+                            max_tokens=800
+                        )
+                        break  # Success, exit loop
+                    except Exception as model_error:
+                        if "unknown_model" in str(model_error).lower() and model_name != model_names[-1]:
+                            continue  # Try next model
+                        else:
+                            raise  # Re-raise if it's the last model or different error
                 
                 gpt_analysis = response.choices[0].message.content
                 
@@ -1198,6 +1210,10 @@ st.markdown("""
 <div style='text-align: center; color: #888;'>
     <p>☀️ SOL Price Prediction Dashboard | 🌸 Orchid • 🌼 Jasmine • 🌺 Bougainvillea</p>
     <p>⚠️ Disclaimer: This is for educational purposes only. Not financial advice.</p>
-    <p style='font-size: 0.9em; margin-top: 10px;'>Built with ❤️ using Streamlit, XGBoost, LSTM, Prophet & Phi-4</p>
+    <p style='font-size: 0.9em; margin-top: 10px;'>
+        <a href='https://github.com/chrismahestiwibowo-tech/ai' target='_blank' style='color: #4da6ff; text-decoration: none;'>
+            📂 View on GitHub
+        </a> | Read README.md for specifications
+    </p>
 </div>
 """, unsafe_allow_html=True)
