@@ -1002,7 +1002,7 @@ Provide your analysis in simple bullet points covering these 5 areas:
 Be specific, data-driven, and practical. Format your response clearly with sections."""
 
                 response = client.chat.completions.create(
-                    model="Phi-4-reasoning",
+                    model="gpt-4",
                     messages=[
                         {"role": "system", "content": "You are an expert cryptocurrency trading analyst specializing in SOL/Solana. Provide clear, actionable trading insights based on quantitative data."},
                         {"role": "user", "content": prompt}
