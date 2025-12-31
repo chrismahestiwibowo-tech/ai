@@ -630,8 +630,27 @@ try:
         current_price = df['Close'].iloc[-1]
         st.info(f"Using latest historical price: ${current_price:.2f}")
     
-    # Train models
-    with st.spinner("🤖 Training and learning the data with our machines..."):
+    # Train models with countdown timer
+    import time
+    
+    # Create placeholder for countdown
+    countdown_placeholder = st.empty()
+    progress_bar = st.progress(0)
+    
+    # Estimate total training time (in seconds)
+    total_time = 15  # Adjust based on your actual training time
+    
+    # Start countdown in a separate container
+    for i in range(total_time, 0, -1):
+        countdown_placeholder.info(f"🤖 Training and learning the data with our machines... ⏱️ {i}s remaining")
+        progress_bar.progress((total_time - i) / total_time)
+        time.sleep(1)
+    
+    # Clear countdown and show training
+    countdown_placeholder.empty()
+    progress_bar.empty()
+    
+    with st.spinner("🤖 Finalizing model training..."):
         # LinearRegression + Prophet
         lrm, model_prophet, df_lrm, X_train_lr, X_test_lr, y_train_lr, y_test_lr = train_models(df)
         forecast_lrm, future_predictions_prophet = generate_forecast(model_prophet, df_lrm, forecast_days)
