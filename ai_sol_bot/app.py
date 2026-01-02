@@ -818,11 +818,11 @@ try:
             
             st.markdown("### 🔍 Model Descriptions")
             st.markdown("""
-            - **🌸 Orchid (Linear Regression + Prophet)**: Elegant baseline using opening price with time-series forecasting
-            - **🌼 Jasmine (XGBoost)**: Advanced model with 11 technical indicators (MA7, MA21, MA50, RSI, MACD, etc.)
-            - **🌺 Bougainvillea (LSTM)**: Deep learning with 60-day price history pattern recognition
+            - **🌸 Orchid**: Elegant and graceful predictor using time-series patterns with seasonal trend analysis
+            - **🌼 Jasmine**: Advanced multi-feature analyzer with 11 technical indicators (MA7, MA21, MA50, RSI, MACD, etc.)
+            - **🌺 Bougainvillea**: Deep pattern recognition model analyzing 60-day historical sequences
             
-            *Flower names represent different model characteristics - just as each flower has unique beauty, each model has unique strengths.*
+            *Each flower represents a unique analytical approach - just as each flower has unique beauty, each model has unique strengths.*
             """)
         
         with col2:
