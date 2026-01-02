@@ -1228,7 +1228,7 @@ st.markdown("---")
 st.markdown("""
 <div style='text-align: center; color: #888;'>
     <p>☀️ SOL Price Prediction Dashboard | 🌸 Orchid • 🌼 Jasmine • 🌺 Bougainvillea</p>
-    <p>⚠️ Disclaimer: This is for educational purposes only. Not financial advice.</p>
+    <p>⚠️ Disclaimer: This is for educational purposes only. Not financial advice. DYOR</p>
     <p style='font-size: 0.9em; margin-top: 10px;'>
         <a href='https://github.com/chrismahestiwibowo-tech/ai' target='_blank' style='color: #4da6ff; text-decoration: none;'>
             📂 View on GitHub
