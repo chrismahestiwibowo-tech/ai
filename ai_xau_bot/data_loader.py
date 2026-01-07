@@ -1,7 +1,12 @@
 """
 Data Loader Module - Fetches historical data from MetaTrader5
 """
-import MetaTrader5 as mt5
+try:
+    import MetaTrader5 as mt5
+    MT5_AVAILABLE = True
+except ImportError:
+    MT5_AVAILABLE = False
+    
 import pandas as pd
 from datetime import datetime, timedelta
 import config
@@ -15,6 +20,8 @@ class MT5DataLoader:
     """Class to handle MetaTrader5 data fetching operations"""
     
     def __init__(self):
+        if not MT5_AVAILABLE:
+            raise ImportError("MetaTrader5 is not available. This module requires Windows and MT5 installation.")
         self.initialized = False
         
     def initialize(self):
