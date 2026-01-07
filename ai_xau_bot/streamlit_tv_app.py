@@ -7,7 +7,7 @@ import numpy as np
 import plotly.graph_objects as go
 from datetime import datetime, timedelta
 import yfinance as yf
-from tradingview_ta import TA_Handler, Interval
+from tradingview_api import TradingView
 import warnings
 warnings.filterwarnings('ignore')
 
@@ -58,14 +58,14 @@ def load_tradingview_data(days=365):
 def get_tradingview_signals():
     """Get TradingView technical analysis signals for XAU/USD"""
     try:
-        handler = TA_Handler(
+        tv = TradingView()
+        # Get technical indicators data
+        symbol_data = tv.get_technicals(
             symbol="XAUUSD",
             exchange="FOREXCOM",
-            screener="forex",
-            interval=Interval.INTERVAL_1_DAY
+            interval="1D"
         )
-        analysis = handler.get_analysis()
-        return analysis
+        return symbol_data
     except Exception as e:
         st.warning(f"TradingView signals unavailable: {str(e)}")
         return None
@@ -221,15 +221,20 @@ def main():
     with col3:
         st.subheader("📡 TradingView Signals")
         if tv_analysis:
-            recommendation = tv_analysis.summary['RECOMMENDATION']
-            if recommendation == 'BUY':
-                st.success(f"🟢 {recommendation}")
-            elif recommendation == 'SELL':
-                st.error(f"🔴 {recommendation}")
-            else:
-                st.warning(f"🟡 {recommendation}")
-            st.write(f"Buy: {tv_analysis.summary['BUY']}")
-            st.write(f"Sell: {tv_analysis.summary['SELL']}")
+            try:
+                recommendation = tv_analysis.get('summary', {}).get('RECOMMENDATION', 'NEUTRAL')
+                if recommendation == 'BUY' or recommendation == 'STRONG_BUY':
+                    st.success(f"🟢 {recommendation}")
+                elif recommendation == 'SELL' or recommendation == 'STRONG_SELL':
+                    st.error(f"🔴 {recommendation}")
+                else:
+                    st.warning(f"🟡 {recommendation}")
+                buy_signals = tv_analysis.get('summary', {}).get('BUY', 0)
+                sell_signals = tv_analysis.get('summary', {}).get('SELL', 0)
+                st.write(f"Buy: {buy_signals}")
+                st.write(f"Sell: {sell_signals}")
+            except:
+                st.info("Signal format not recognized")
         else:
             st.info("Signals unavailable")
     
@@ -307,20 +312,26 @@ def main():
     # TradingView detailed indicators
     if tv_analysis:
         with st.expander("📊 TradingView Detailed Analysis"):
-            col1, col2, col3 = st.columns(3)
-            with col1:
-                st.write("**Oscillators**")
-                st.write(f"Buy: {tv_analysis.oscillators['BUY']}")
-                st.write(f"Neutral: {tv_analysis.oscillators['NEUTRAL']}")
-                st.write(f"Sell: {tv_analysis.oscillators['SELL']}")
-            with col2:
-                st.write("**Moving Averages**")
-                st.write(f"Buy: {tv_analysis.moving_averages['BUY']}")
-                st.write(f"Neutral: {tv_analysis.moving_averages['NEUTRAL']}")
-                st.write(f"Sell: {tv_analysis.moving_averages['SELL']}")
-            with col3:
-                st.write("**Summary**")
-                st.write(f"Recommendation: {tv_analysis.summary['RECOMMENDATION']}")
+            try:
+                col1, col2, col3 = st.columns(3)
+                with col1:
+                    st.write("**Oscillators**")
+                    osc = tv_analysis.get('oscillators', {})
+                    st.write(f"Buy: {osc.get('BUY', 0)}")
+                    st.write(f"Neutral: {osc.get('NEUTRAL', 0)}")
+                    st.write(f"Sell: {osc.get('SELL', 0)}")
+                with col2:
+                    st.write("**Moving Averages**")
+                    ma = tv_analysis.get('moving_averages', {})
+                    st.write(f"Buy: {ma.get('BUY', 0)}")
+                    st.write(f"Neutral: {ma.get('NEUTRAL', 0)}")
+                    st.write(f"Sell: {ma.get('SELL', 0)}")
+                with col3:
+                    st.write("**Summary**")
+                    summary = tv_analysis.get('summary', {})
+                    st.write(f"Recommendation: {summary.get('RECOMMENDATION', 'N/A')}")
+            except Exception as e:
+                st.write(f"Technical data: {str(tv_analysis)[:200]}...")
     
     # Footer
     st.markdown("---")
