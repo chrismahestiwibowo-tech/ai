@@ -26,39 +26,31 @@ st.markdown("### AI-Powered Gold Price Analysis and Forecasting")
 
 @st.cache_data(ttl=7200)  # Cache for 2 hours to reduce API calls
 def load_gold_data(days=365):
-    """Load XAU/USD data using yfinance with fallback options"""
-    tickers_to_try = [
-        ("GOLD", "Gold ETF"),
-        ("GLD", "SPDR Gold Shares"),
-        ("GC=F", "Gold Futures"),
-        ("XAUUSD=X", "XAU/USD Forex")
-    ]
-    
-    end_date = datetime.now()
-    start_date = end_date - timedelta(days=days)
-    
-    for ticker_symbol, ticker_name in tickers_to_try:
-        try:
-            # Download with reduced session calls
-            df = yf.download(
-                ticker_symbol,
-                start=start_date,
-                end=end_date,
-                interval="1d",
-                progress=False,
-                auto_adjust=True
-            )
-            
-            if not df.empty and len(df) > 50:  # Ensure we have enough data
-                df.reset_index(inplace=True)
-                st.success(f"✓ Data loaded from {ticker_name}")
-                return df
-        except Exception as e:
-            continue
-    
-    # If all fail, generate synthetic data for demo
-    st.warning("⚠️ Using demo data due to API limits. Refresh in a few minutes for live data.")
-    return generate_demo_data(days)
+    """Load XAU/USD data using yfinance"""
+    try:
+        end_date = datetime.now()
+        start_date = end_date - timedelta(days=days)
+        
+        # Download XAU/USD forex data
+        df = yf.download(
+            "XAUUSD=X",
+            start=start_date,
+            end=end_date,
+            interval="1d",
+            progress=False,
+            auto_adjust=True
+        )
+        
+        if not df.empty and len(df) > 50:  # Ensure we have enough data
+            df.reset_index(inplace=True)
+            st.success("✓ Data loaded from XAU/USD Forex")
+            return df
+        else:
+            st.warning("⚠️ Using demo data due to insufficient data. Refresh in a few minutes.")
+            return generate_demo_data(days)
+    except Exception as e:
+        st.warning(f"⚠️ Using demo data due to API error: {str(e)}")
+        return generate_demo_data(days)
 
 def generate_demo_data(days=365):
     """Generate realistic demo gold price data"""
