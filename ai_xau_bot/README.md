@@ -1,84 +1,115 @@
 # XAU/USD Price Prediction System
 
-Advanced price forecasting system for gold (XAU/USD) with web interface and local MetaTrader5 integration.
+AI-powered gold price forecasting system with TradingView technical analysis.
 
 ## 🌐 Live Demo
 **Web App (Cloud)**: https://xauusd-bot.streamlit.app
 
-The cloud version uses Yahoo Finance for real-time gold price data and runs completely in the browser with interactive charts and predictions.
+Uses Yahoo Finance for real-time gold price data and TradingView for technical analysis signals. Runs completely in the browser with interactive charts and AI predictions.
 
 ## Features
 
-- **Data Collection**: Fetches 3 years of historical XAU/USD data from MetaTrader5
-- **Technical Analysis**: 11 core technical indicators + derived features
-- **Machine Learning**: XGBoost regression model with 80/20 train-test split
-- **Monte Carlo Simulation**: 10,000 simulations for probabilistic forecasting
-- **Comprehensive Evaluation**: MSE, RMSE, MAE, R² metrics
-- **Visualization**: Multiple charts for analysis and insights
+- **Real-Time Data**: Yahoo Finance XAU/USD price data
+- **TradingView Analysis**: Live technical analysis signals (BUY/SELL/NEUTRAL)
+- **AI Predictions**: Machine learning price forecasting
+- **Technical Indicators**: RSI, MACD, Bollinger Bands, Moving Averages
+- **Interactive Charts**: Candlestick charts with technical overlays
+- **Cloud Deployment**: Accessible from any device
 
-## Technical Indicators (11 Core)
+## Technical Indicators
 
 1. **RSI** - Relative Strength Index
 2. **MACD** - Moving Average Convergence Divergence
-3. **MACD Signal** - MACD Signal Line
-4. **Bollinger Bands** - Upper and Lower bands
-5. **ATR** - Average True Range
-6. **SMA** - Simple Moving Average (20, 50 periods)
-7. **EMA** - Exponential Moving Average (20, 50 periods)
-8. **Stochastic** - Stochastic Oscillator
-9. **CCI** - Commodity Channel Index
-10. **ADX** - Average Directional Index
-11. **Williams %R** - Williams Percent Range
+3. **Bollinger Bands** - Upper and Lower bands
+4. **SMA** - Simple Moving Average (20, 50 periods)
+5. **EMA** - Exponential Moving Average (20 period)
+6. **TradingView Signals** - Oscillators and Moving Averages analysis
 
-Plus additional features: OBV, ROC, price changes, rolling statistics, and lag features.
+## Project Structure## Output
 
-## Project Structure
+- **Live Price Charts**: Interactive candlestick visualizations
+- **Technical Analysis**: RSI and MACD indicators
+- **AI Predictions**: Next-day price forecasts
+- **TradingView Signals**: Real-time trading recommendations
 
-```
-20260107_ai_xauusd_bot/
-├── config.py              # Configuration settings
-├── data_loader.py         # MetaTrader5 data fetching
-├── indicators.py          # Technical indicators calculation
-├── model.py              # XGBoost model training & evaluation
-├── monte_carlo.py        # Monte Carlo simulation
-├── main.py               # Main application orchestrator
-├── requirements.txt      # Python dependencies
-├── .env.example          # Environment variables template
-├── models/               # Trained models directory
-├── plots/                # Visualization outputs
-└── results/              # Analysis results (CSV, reports)
+## Technologies
+
+- **Python** - Core language
+- **Streamlit** - Web interface
+- **Yahoo Finance (yfinance)** - Real-time market data
+- **TradingView-TA** - Technical analysis signals
+- **Scikit-learn** - Machine learning
+- **Plotly** - Interactive charts
+- **Pandas/NumPy** - Data processing
+
+## Deployment
+
+Deployed on **Streamlit Cloud**:
+- Auto-deploys from GitHub repository
+- No server maintenance required
+- Free tier available
+- Accessible from any device
+
+## Contributing
+
+Feel free to fork and submit pull requests!
+
+## Disclaimer
+
+**Educational purposes only. Not financial advice. Always do your own research before trading.**
+
+## License
+
+MIT License
+
+## Author
+
+**Chris Mahestiwibowo**
+- GitHub: [@chrismahestiwibowo-tech](https://github.com/chrismahestiwibowo-tech)
+- Email: chrismahestiwibowo.ae@gmail.com
+
+ai_xau_bot/
+├── streamlit_app.py       # Cloud web app (yfinance)
+├── streamlit_tv_app.py    # Local app with TradingView
+├── requirements.txt       # Python dependencies
+└── README.md             # This file
 ```
 
 ## Installation
 
-1. **Clone or navigate to the project directory**
+1. **Clone the repository**:
+```bash
+git clone https://github.com/chrismahestiwibowo-tech/ai.git
+cd ai/ai_xau_bot
+```
 
-2. **Create and activate virtual environment** (already done)
+2. **Create virtual environment**:
+```bash
+python -m venv venv
+venv\Scripts\activate  # Windows
+```
 
 3. **Install dependencies**:
 ```bash
 pip install -r requirements.txt
 ```
 
-4. **Configure MetaTrader5 credentials**:
-   - Copy `.env.example` to `.env`
-   - Edit `.env` with your MetaTrader5 credentials:
-   ```
-   MT5_LOGIN=your_account_number
-   MT5_PASSWORD=your_password
-   MT5_SERVER=your_broker_server
-   MT5_PATH=C:\Program Files\MetaTrader 5\terminal64.exe
-   ```
-
 ## Usage
 
-### 🌐 Web Application (Recommended)
+### 🌐 Cloud Version (Recommended)
 
-**Cloud Deployment**: Visit https://xauusd-bot.streamlit.app
+Visit: **https://xauusd-bot.streamlit.app**
 
-**Local Streamlit App**:
+### 💻 Run Locally
+
+**Option 1: Basic Version (Yahoo Finance only)**
 ```bash
 streamlit run streamlit_app.py
+```
+
+**Option 2: With TradingView Signals**
+```bash
+streamlit run streamlit_tv_app.py
 ```
 
 Features:
@@ -86,67 +117,9 @@ Features:
 - Interactive candlestick charts
 - Technical indicators (RSI, MACD, Bollinger Bands)
 - AI-powered next-day price predictions
-- No MetaTrader5 required
+- TradingView trading signals (streamlit_tv_app.py only)
 
-### 🖥️ Local Analysis (Windows + MetaTrader5)
-
-Run complete analysis with MT5 data:
-```bash
-python main_mt5.py
-```
-
-This will:
-1. Load 3 years of XAU/USD historical data
-2. Calculate 11 technical indicators
-3. Train XGBoost model (80/20 split)
-4. Evaluate with MSE, RMSE, MAE, R²
-5. Run Monte Carlo simulation (10,000 paths)
-6. Generate comprehensive reports and visualizations
-
-### Run Individual Modules
-
-**Test Data Loading**:
-```bash
-python data_loader.py
-```
-
-**Test Indicators**:
-```bash
-python indicators.py
-```
-
-**Test Model Training**:
-```bash
-python model.py
-```
-
-**Test Monte Carlo**:
-```bash
-python monte_carlo.py
-```
-
-## Configuration
-
-Edit [config.py](config.py) to customize:
-
-- **Symbol**: Trading pair (default: XAUUSD)
-- **Timeframe**: H1, H4, D1, etc. (default: H1)
-- **Historical Period**: Years of data (default: 3)
-- **Train/Test Split**: (default: 80/20)
-- **XGBoost Parameters**: Learning rate, max_depth, etc.
-- **Monte Carlo Settings**: Number of simulations, forecast horizon
-
-## Output Files
-
-### Models
-- `models/xauusd_xgboost_model.pkl` - Trained XGBoost model
-- `models/scaler.pkl` - Feature scaler
-
-### Plots
-- `plots/predictions.png` - Actual vs predicted prices
-- `plots/feature_importance.png` - Feature importance chart
-- `plots/monte_carlo_paths.png` - Simulation paths
-- `plots/monte_carlo_distribution.png` - Price distribution
+## Output
 
 ### Results
 - `results/model_metrics.csv` - MSE, RMSE, MAE, R²
