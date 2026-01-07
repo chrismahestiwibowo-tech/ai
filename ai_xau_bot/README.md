@@ -1,6 +1,11 @@
 # XAU/USD Price Prediction System
 
-Advanced price forecasting system for gold (XAU/USD) using MetaTrader5, XGBoost, and Monte Carlo simulation.
+Advanced price forecasting system for gold (XAU/USD) with web interface and local MetaTrader5 integration.
+
+## 🌐 Live Demo
+**Web App (Cloud)**: https://xauusd-bot.streamlit.app
+
+The cloud version uses Yahoo Finance for real-time gold price data and runs completely in the browser with interactive charts and predictions.
 
 ## Features
 
@@ -67,10 +72,27 @@ pip install -r requirements.txt
 
 ## Usage
 
-### Run Complete Analysis
+### 🌐 Web Application (Recommended)
 
+**Cloud Deployment**: Visit https://xauusd-bot.streamlit.app
+
+**Local Streamlit App**:
 ```bash
-python main.py
+streamlit run streamlit_app.py
+```
+
+Features:
+- Real-time gold price data from Yahoo Finance
+- Interactive candlestick charts
+- Technical indicators (RSI, MACD, Bollinger Bands)
+- AI-powered next-day price predictions
+- No MetaTrader5 required
+
+### 🖥️ Local Analysis (Windows + MetaTrader5)
+
+Run complete analysis with MT5 data:
+```bash
+python main_mt5.py
 ```
 
 This will:
