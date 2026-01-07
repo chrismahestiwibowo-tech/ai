@@ -24,26 +24,66 @@ st.set_page_config(
 st.title("💰 XAU/USD Price Prediction System")
 st.markdown("### AI-Powered Gold Price Analysis and Forecasting")
 
-@st.cache_data(ttl=3600)
+@st.cache_data(ttl=7200)  # Cache for 2 hours to reduce API calls
 def load_gold_data(days=365):
-    """Load XAU/USD data using yfinance"""
-    try:
-        end_date = datetime.now()
-        start_date = end_date - timedelta(days=days)
-        
-        # Download gold data (GC=F is Gold Futures)
-        ticker = yf.Ticker("GC=F")
-        df = ticker.history(start=start_date, end=end_date, interval="1d")
-        
-        if df.empty:
-            st.error("No data retrieved. Please check your internet connection.")
-            return None
-        
-        df.reset_index(inplace=True)
-        return df
-    except Exception as e:
-        st.error(f"Error loading data: {str(e)}")
-        return None
+    """Load XAU/USD data using yfinance with fallback options"""
+    tickers_to_try = [
+        ("GOLD", "Gold ETF"),
+        ("GLD", "SPDR Gold Shares"),
+        ("GC=F", "Gold Futures"),
+        ("XAUUSD=X", "XAU/USD Forex")
+    ]
+    
+    end_date = datetime.now()
+    start_date = end_date - timedelta(days=days)
+    
+    for ticker_symbol, ticker_name in tickers_to_try:
+        try:
+            # Download with reduced session calls
+            df = yf.download(
+                ticker_symbol,
+                start=start_date,
+                end=end_date,
+                interval="1d",
+                progress=False,
+                auto_adjust=True
+            )
+            
+            if not df.empty and len(df) > 50:  # Ensure we have enough data
+                df.reset_index(inplace=True)
+                st.success(f"✓ Data loaded from {ticker_name}")
+                return df
+        except Exception as e:
+            continue
+    
+    # If all fail, generate synthetic data for demo
+    st.warning("⚠️ Using demo data due to API limits. Refresh in a few minutes for live data.")
+    return generate_demo_data(days)
+
+def generate_demo_data(days=365):
+    """Generate realistic demo gold price data"""
+    dates = pd.date_range(end=datetime.now(), periods=days, freq='D')
+    
+    # Start from realistic gold price
+    base_price = 2050
+    prices = [base_price]
+    
+    # Random walk with drift
+    np.random.seed(42)
+    for i in range(1, days):
+        change = np.random.normal(0.0002, 0.01)  # Small drift, moderate volatility
+        prices.append(prices[-1] * (1 + change))
+    
+    df = pd.DataFrame({
+        'Date': dates,
+        'Open': prices,
+        'High': [p * (1 + abs(np.random.normal(0, 0.005))) for p in prices],
+        'Low': [p * (1 - abs(np.random.normal(0, 0.005))) for p in prices],
+        'Close': prices,
+        'Volume': [np.random.randint(100000, 500000) for _ in range(days)]
+    })
+    
+    return df
 
 def add_technical_indicators(df):
     """Add technical indicators to the dataframe"""
