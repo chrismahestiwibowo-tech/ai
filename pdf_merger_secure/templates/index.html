@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PDF Merger Bot</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1>📄 PDF Merger Bot</h1>
+            <p class="subtitle">Merge and reorder your PDF files with ease</p>
+        </header>
+
+        <main class="main-content">
+            <!-- Upload Section -->
+            <section class="section upload-section">
+                <div class="section-header">
+                    <h2>Step 1: Upload PDF Files</h2>
+                    <span class="step-indicator">Add up to 50 PDFs</span>
+                </div>
+                
+                <div class="upload-area" id="uploadArea">
+                    <div class="upload-icon">📁</div>
+                    <h3>Drag & Drop PDF files here</h3>
+                    <p>or</p>
+                    <button class="btn btn-primary" id="browseBtn">Choose Files</button>
+                    <input type="file" id="fileInput" multiple accept=".pdf" hidden>
+                    <p class="upload-hint">Max file size: 50 MB per file | Supported format: PDF only</p>
+                </div>
+
+                <div id="uploadProgress" class="upload-progress" style="display: none;">
+                    <div class="progress-bar"></div>
+                    <p id="progressText">Uploading...</p>
+                </div>
+
+                <!-- File List -->
+                <div id="fileList" class="file-list" style="display: none;">
+                    <h3>Uploaded Files (<span id="fileCount">0</span>/50)</h3>
+                    <div id="filesContainer" class="files-container"></div>
+                </div>
+            </section>
+
+            <!-- Sorting Section -->
+            <section class="section sorting-section" id="sortingSection" style="display: none;">
+                <div class="section-header">
+                    <h2>Step 2: Arrange & Select Pages</h2>
+                    <span class="step-indicator">Drag to reorder, select pages to include</span>
+                </div>
+
+                <div class="sorting-info">
+                    <p>✓ Drag files to change merge order</p>
+                    <p>✓ Click on a file to select specific pages</p>
+                    <p>✓ Select "All" to include entire file</p>
+                </div>
+
+                <div id="sortableList" class="sortable-list"></div>
+            </section>
+
+            <!-- Actions Section -->
+            <section class="section actions-section" id="actionsSection" style="display: none;">
+                <div class="section-header">
+                    <h2>Step 3: Review & Merge</h2>
+                </div>
+
+                <div class="merge-preview">
+                    <h3>Merge Preview</h3>
+                    <div id="mergePreview" class="preview-content"></div>
+                </div>
+
+                <div class="filename-input-section">
+                    <label for="outputFilename">Output File Name:</label>
+                    <div class="filename-input-wrapper">
+                        <input type="text" id="outputFilename" class="input-field" placeholder="e.g., merged_document" value="merged_document">
+                        <span class="filename-extension">.pdf</span>
+                    </div>
+                    <p class="input-hint">Enter the name for your merged PDF file (without .pdf extension)</p>
+                </div>
+
+                <div class="action-buttons">
+                    <button class="btn btn-secondary" id="resetBtn">← Start Over</button>
+                    <button class="btn btn-success" id="mergeBtn">✓ Merge PDFs</button>
+                </div>
+            </section>
+
+            <!-- Result Section -->
+            <section class="section result-section" id="resultSection" style="display: none;">
+                <div class="result-content success">
+                    <div class="result-icon">✓</div>
+                    <h2>Merge Complete!</h2>
+                    <p id="resultMessage">Your PDF has been merged successfully.</p>
+                    <button class="btn btn-success" id="downloadBtn">⬇ Download PDF</button>
+                    <button class="btn btn-secondary" id="startAgainBtn">Start New Merge</button>
+                </div>
+            </section>
+
+            <!-- Error Section -->
+            <section class="section error-section" id="errorSection" style="display: none;">
+                <div class="result-content error">
+                    <div class="result-icon">✗</div>
+                    <h2>Error</h2>
+                    <p id="errorMessage">An error occurred.</p>
+                    <button class="btn btn-secondary" id="errorRetryBtn">← Go Back</button>
+                </div>
+            </section>
+        </main>
+
+        <footer class="footer">
+            <p>PDF Merger Bot • All files are processed locally and deleted after download</p>
+            <p>This app was made by <a href="https://github.com/chrismahestiwibowo-tech" target="_blank" rel="noopener noreferrer">Chrisma</a> for BNK</p>
+        </footer>
+    </div>
+
+    <!-- Modal for Page Selection -->
+    <div id="pageModal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modalTitle">Select Pages</h3>
+                <button class="close-btn" id="closeModal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="page-selection-options">
+                    <label class="radio-option">
+                        <input type="radio" name="pageOption" value="all" checked>
+                        <span>All Pages</span>
+                    </label>
+                    <label class="radio-option">
+                        <input type="radio" name="pageOption" value="custom">
+                        <span>Custom Selection</span>
+                    </label>
+                </div>
+                <div id="customPageInput" style="display: none;">
+                    <label>Enter page numbers (comma-separated, 1-based):</label>
+                    <input type="text" id="pageNumbers" placeholder="e.g., 1,3,5-7" class="input-field">
+                    <p class="input-hint">Examples: "1,2,3" or "1-5,8,10"</p>
+                </div>
+                <div id="totalPagesInfo" class="total-pages-info"></div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" id="cancelModal">Cancel</button>
+                <button class="btn btn-primary" id="confirmPageSelection">Confirm</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Loading Spinner -->
+    <div id="loadingSpinner" class="loading-spinner" style="display: none;">
+        <div class="spinner"></div>
+        <p>Processing your PDFs...</p>
+    </div>
+
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>
