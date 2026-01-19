@@ -119,6 +119,11 @@ with col2:
 
 # Display uploaded files
 if st.session_state.uploaded_files:
+    # Ensure all files have unique IDs
+    for file_detail in st.session_state.uploaded_files:
+        if 'id' not in file_detail:
+            file_detail['id'] = str(uuid.uuid4())
+    
     st.subheader("Step 2: Arrange Files")
     
     st.markdown("**📁 Arrange your files:**")
@@ -135,24 +140,34 @@ if st.session_state.uploaded_files:
         with cols[1]:
             if idx > 1:
                 if st.button("⬆️", key=f"up_{file_id}", help="Move up"):
-                    # Find current index and swap
-                    current_idx = next(i for i, f in enumerate(st.session_state.uploaded_files) if f['id'] == file_id)
-                    st.session_state.uploaded_files[current_idx], st.session_state.uploaded_files[current_idx-1] = (
-                        st.session_state.uploaded_files[current_idx-1], st.session_state.uploaded_files[current_idx]
-                    )
-                    st.rerun()
+                    try:
+                        # Find current index and swap
+                        current_idx = next(i for i, f in enumerate(st.session_state.uploaded_files) if f['id'] == file_id)
+                        if current_idx > 0:
+                            # Swap with previous item
+                            temp = st.session_state.uploaded_files[current_idx - 1]
+                            st.session_state.uploaded_files[current_idx - 1] = st.session_state.uploaded_files[current_idx]
+                            st.session_state.uploaded_files[current_idx] = temp
+                            st.rerun()
+                    except (StopIteration, IndexError):
+                        st.error("Error moving file up")
             else:
                 st.empty()
         
         with cols[2]:
             if idx < len(st.session_state.uploaded_files):
                 if st.button("⬇️", key=f"down_{file_id}", help="Move down"):
-                    # Find current index and swap
-                    current_idx = next(i for i, f in enumerate(st.session_state.uploaded_files) if f['id'] == file_id)
-                    st.session_state.uploaded_files[current_idx], st.session_state.uploaded_files[current_idx+1] = (
-                        st.session_state.uploaded_files[current_idx+1], st.session_state.uploaded_files[current_idx]
-                    )
-                    st.rerun()
+                    try:
+                        # Find current index and swap
+                        current_idx = next(i for i, f in enumerate(st.session_state.uploaded_files) if f['id'] == file_id)
+                        if current_idx < len(st.session_state.uploaded_files) - 1:
+                            # Swap with next item
+                            temp = st.session_state.uploaded_files[current_idx + 1]
+                            st.session_state.uploaded_files[current_idx + 1] = st.session_state.uploaded_files[current_idx]
+                            st.session_state.uploaded_files[current_idx] = temp
+                            st.rerun()
+                    except (StopIteration, IndexError):
+                        st.error("Error moving file down")
             else:
                 st.empty()
         
