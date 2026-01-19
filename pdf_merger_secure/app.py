@@ -46,7 +46,16 @@ with st.sidebar:
     
     st.divider()
     
-    st.markdown("## 👨‍💻 About This Project")
+    st.subheader("📊 Statistics")
+    col1, col2 = st.columns(2)
+    with col1:
+        st.metric("Files Uploaded", len(st.session_state.uploaded_files))
+    with col2:
+        st.metric("Ready to Merge", "Yes" if len(st.session_state.uploaded_files) > 1 else "No")
+    
+    st.divider()
+    
+    st.markdown("## 👨‍💻 About This Tool")
     st.markdown("**Created by:** Chrisma Hestiwibowo")
     st.markdown("**Role:** Project Manager, AI Developer & Data Scientist")
     st.markdown("**✨ Project:** PDF Merger - Secure Document Processing")
@@ -60,15 +69,6 @@ with st.sidebar:
         st.markdown("[![GitHub](https://img.shields.io/badge/GitHub-181717?style=flat&logo=github&logoColor=white)](https://github.com/chrismahestiwibowo-tech)")
     st.markdown("---")
     st.markdown("💡 **Tip:** This app is part of my AI portfolio! Check back for updates as I integrate more advanced ML/AI techniques.")
-    
-    st.divider()
-    
-    st.subheader("📊 Statistics")
-    col1, col2 = st.columns(2)
-    with col1:
-        st.metric("Files Uploaded", len(st.session_state.uploaded_files))
-    with col2:
-        st.metric("Ready to Merge", "Yes" if len(st.session_state.uploaded_files) > 1 else "No")
 
 # Main content
 col1, col2 = st.columns([3, 1])
