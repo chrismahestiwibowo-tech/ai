@@ -187,6 +187,6 @@ else:
 st.divider()
 st.markdown("""
 <div style="text-align: center; color: gray; font-size: 0.8em;">
-    <p>🚀 PDF Merger v1.0 | Made with Streamlit</p>
+    <p>🚀 PDF Merger v1.0 | Made with Proud and Love</p>
 </div>
 """, unsafe_allow_html=True)
