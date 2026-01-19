@@ -3,6 +3,7 @@ Streamlit application for PDF Merger Bot.
 """
 import os
 import io
+import uuid
 import streamlit as st
 from datetime import datetime
 from pathlib import Path
@@ -96,6 +97,7 @@ with col1:
                 f.write(file.getbuffer())
             
             file_details.append({
+                'id': str(uuid.uuid4()),  # Unique ID for each file
                 'name': file.name,
                 'path': file_path,
                 'size': file.size
@@ -125,15 +127,18 @@ if st.session_state.uploaded_files:
     # Display files with control buttons
     for idx, file_detail in enumerate(st.session_state.uploaded_files, 1):
         cols = st.columns([0.3, 0.2, 0.2, 0.2, 3.5, 0.3])
+        file_id = file_detail['id']
         
         with cols[0]:
             st.markdown(f"**{idx}.**")
         
         with cols[1]:
             if idx > 1:
-                if st.button("⬆️", key=f"up_{idx}", help="Move up"):
-                    st.session_state.uploaded_files[idx-1], st.session_state.uploaded_files[idx-2] = (
-                        st.session_state.uploaded_files[idx-2], st.session_state.uploaded_files[idx-1]
+                if st.button("⬆️", key=f"up_{file_id}", help="Move up"):
+                    # Find current index and swap
+                    current_idx = next(i for i, f in enumerate(st.session_state.uploaded_files) if f['id'] == file_id)
+                    st.session_state.uploaded_files[current_idx], st.session_state.uploaded_files[current_idx-1] = (
+                        st.session_state.uploaded_files[current_idx-1], st.session_state.uploaded_files[current_idx]
                     )
                     st.rerun()
             else:
@@ -141,19 +146,21 @@ if st.session_state.uploaded_files:
         
         with cols[2]:
             if idx < len(st.session_state.uploaded_files):
-                if st.button("⬇️", key=f"down_{idx}", help="Move down"):
-                    st.session_state.uploaded_files[idx-1], st.session_state.uploaded_files[idx] = (
-                        st.session_state.uploaded_files[idx], st.session_state.uploaded_files[idx-1]
+                if st.button("⬇️", key=f"down_{file_id}", help="Move down"):
+                    # Find current index and swap
+                    current_idx = next(i for i, f in enumerate(st.session_state.uploaded_files) if f['id'] == file_id)
+                    st.session_state.uploaded_files[current_idx], st.session_state.uploaded_files[current_idx+1] = (
+                        st.session_state.uploaded_files[current_idx+1], st.session_state.uploaded_files[current_idx]
                     )
                     st.rerun()
             else:
                 st.empty()
         
         with cols[3]:
-            if st.button("🗑️", key=f"remove_{idx}", help="Remove"):
+            if st.button("🗑️", key=f"remove_{file_id}", help="Remove"):
                 if os.path.exists(file_detail['path']):
                     os.remove(file_detail['path'])
-                st.session_state.uploaded_files.pop(idx-1)
+                st.session_state.uploaded_files = [f for f in st.session_state.uploaded_files if f['id'] != file_id]
                 st.rerun()
         
         with cols[4]:
