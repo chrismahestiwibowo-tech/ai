@@ -7,7 +7,7 @@ import streamlit as st
 from datetime import datetime
 from pathlib import Path
 from pdf_processor import PDFProcessor
-
+from streamlit_sortables import sort_items
 # Page configuration
 st.set_page_config(
     page_title="PDF Merger",
@@ -120,39 +120,46 @@ with col2:
 if st.session_state.uploaded_files:
     st.subheader("Step 2: Arrange Files")
     
-    st.markdown("**Uploaded files (in order):**")
+    st.markdown("**📁 Drag and drop to arrange files:**")
+    st.info("💡 Tip: Click and drag the files below to reorder them. Use the trash icon to remove.")
     
-    # Create a container for better visibility
-    with st.container():
-        # Display files in order
-        for idx, file_detail in enumerate(st.session_state.uploaded_files, 1):
-            cols = st.columns([2.5, 0.5, 0.5, 0.5])
-            
-            with cols[0]:
-                st.markdown(f"**{idx}.** {file_detail['name']} ({file_detail['size'] / 1024:.1f} KB)")
-            
-            with cols[1]:
-                if idx > 1:
-                    if st.button("⬆️", key=f"up_{idx}", help="Move up", use_container_width=True):
-                        st.session_state.uploaded_files[idx-1], st.session_state.uploaded_files[idx-2] = (
-                            st.session_state.uploaded_files[idx-2], st.session_state.uploaded_files[idx-1]
-                        )
-                        st.rerun()
-            
-            with cols[2]:
-                if idx < len(st.session_state.uploaded_files):
-                    if st.button("⬇️", key=f"down_{idx}", help="Move down", use_container_width=True):
-                        st.session_state.uploaded_files[idx-1], st.session_state.uploaded_files[idx] = (
-                            st.session_state.uploaded_files[idx], st.session_state.uploaded_files[idx-1]
-                        )
-                        st.rerun()
-            
-            with cols[3]:
-                if st.button("🗑️", key=f"remove_{idx}", help="Remove", use_container_width=True):
-                    if os.path.exists(file_detail['path']):
-                        os.remove(file_detail['path'])
-                    st.session_state.uploaded_files.pop(idx-1)
-                    st.rerun()
+    # Create file list for sorting
+    file_items = [
+        f"🔗 {file_detail['name']} ({file_detail['size'] / 1024:.1f} KB)"
+        for file_detail in st.session_state.uploaded_files
+    ]
+    
+    # Drag and drop sorting
+    sorted_items = sort_items(file_items)
+    
+    # Reorder files based on sorted items
+    if sorted_items != file_items:
+        reordered_files = []
+        for sorted_item in sorted_items:
+            for file_detail in st.session_state.uploaded_files:
+                if sorted_item.endswith(f"{file_detail['name']} ({file_detail['size'] / 1024:.1f} KB)"):
+                    reordered_files.append(file_detail)
+                    break
+        st.session_state.uploaded_files = reordered_files
+        st.rerun()
+    
+    # Display files with delete buttons
+    st.markdown("**Current order:**")
+    for idx, file_detail in enumerate(st.session_state.uploaded_files, 1):
+        cols = st.columns([0.5, 4, 0.5])
+        
+        with cols[0]:
+            st.markdown(f"**{idx}**")
+        
+        with cols[1]:
+            st.markdown(f"📄 {file_detail['name']} ({file_detail['size'] / 1024:.1f} KB)")
+        
+        with cols[2]:
+            if st.button("🗑️", key=f"remove_{idx}", help="Remove", use_container_width=True):
+                if os.path.exists(file_detail['path']):
+                    os.remove(file_detail['path'])
+                st.session_state.uploaded_files.pop(idx-1)
+                st.rerun()
     
     st.divider()
     
