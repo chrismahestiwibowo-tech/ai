@@ -53,9 +53,11 @@ with st.sidebar:
     st.markdown(f"**📅 Launched:** {datetime.now().strftime('%B %Y')}")
     st.markdown("---")
     st.markdown("### 🔗 Connect With Me")
-    st.markdown("[![LinkedIn](https://img.shields.io/badge/LinkedIn-0077B5?style=flat&logo=linkedin&logoColor=white)](https://linkedin.com/in/chrismahestiwibowo)")
-    st.markdown("[![GitHub](https://img.shields.io/badge/GitHub-181717?style=flat&logo=github&logoColor=white)](https://github.com/chrismahestiwibowo-tech)")
-    st.markdown("[![Email](https://img.shields.io/badge/Email-EA4335?style=flat&logo=gmail&logoColor=white)](mailto:chrismahestiwibowo.ae@gmail.com)")
+    col1, col2 = st.columns(2)
+    with col1:
+        st.markdown("[![LinkedIn](https://img.shields.io/badge/LinkedIn-0077B5?style=flat&logo=linkedin&logoColor=white)](https://linkedin.com/in/chrismahestiwibowo)")
+    with col2:
+        st.markdown("[![GitHub](https://img.shields.io/badge/GitHub-181717?style=flat&logo=github&logoColor=white)](https://github.com/chrismahestiwibowo-tech)")
     st.markdown("---")
     st.markdown("💡 **Tip:** This app is part of my AI portfolio! Check back for updates as I integrate more advanced ML/AI techniques.")
     
