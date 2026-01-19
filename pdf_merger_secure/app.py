@@ -122,26 +122,37 @@ if st.session_state.uploaded_files:
     
     st.markdown("**Uploaded files (in order):**")
     
-    # Display files in order
-    for idx, file_detail in enumerate(st.session_state.uploaded_files, 1):
-        col1, col2, col3 = st.columns([3, 1, 1])
-        
-        with col1:
-            st.write(f"{idx}. {file_detail['name']} ({file_detail['size'] / 1024:.1f} KB)")
-        
-        with col2:
-            if idx > 1 and st.button("⬆️", key=f"up_{idx}", help="Move up"):
-                st.session_state.uploaded_files[idx-1], st.session_state.uploaded_files[idx-2] = (
-                    st.session_state.uploaded_files[idx-2], st.session_state.uploaded_files[idx-1]
-                )
-                st.rerun()
-        
-        with col3:
-            if idx < len(st.session_state.uploaded_files) and st.button("⬇️", key=f"down_{idx}", help="Move down"):
-                st.session_state.uploaded_files[idx-1], st.session_state.uploaded_files[idx] = (
-                    st.session_state.uploaded_files[idx], st.session_state.uploaded_files[idx-1]
-                )
-                st.rerun()
+    # Create a container for better visibility
+    with st.container():
+        # Display files in order
+        for idx, file_detail in enumerate(st.session_state.uploaded_files, 1):
+            cols = st.columns([2.5, 0.5, 0.5, 0.5])
+            
+            with cols[0]:
+                st.markdown(f"**{idx}.** {file_detail['name']} ({file_detail['size'] / 1024:.1f} KB)")
+            
+            with cols[1]:
+                if idx > 1:
+                    if st.button("⬆️", key=f"up_{idx}", help="Move up", use_container_width=True):
+                        st.session_state.uploaded_files[idx-1], st.session_state.uploaded_files[idx-2] = (
+                            st.session_state.uploaded_files[idx-2], st.session_state.uploaded_files[idx-1]
+                        )
+                        st.rerun()
+            
+            with cols[2]:
+                if idx < len(st.session_state.uploaded_files):
+                    if st.button("⬇️", key=f"down_{idx}", help="Move down", use_container_width=True):
+                        st.session_state.uploaded_files[idx-1], st.session_state.uploaded_files[idx] = (
+                            st.session_state.uploaded_files[idx], st.session_state.uploaded_files[idx-1]
+                        )
+                        st.rerun()
+            
+            with cols[3]:
+                if st.button("🗑️", key=f"remove_{idx}", help="Remove", use_container_width=True):
+                    if os.path.exists(file_detail['path']):
+                        os.remove(file_detail['path'])
+                    st.session_state.uploaded_files.pop(idx-1)
+                    st.rerun()
     
     st.divider()
     
