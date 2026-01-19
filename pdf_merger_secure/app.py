@@ -189,21 +189,35 @@ if st.session_state.uploaded_files:
         if st.button("🔗 Merge PDFs", use_container_width=True, type="primary"):
             with st.spinner("Merging PDFs..."):
                 try:
-                    # Get file paths
-                    pdf_paths = [f['path'] for f in st.session_state.uploaded_files]
+                    # Get file paths and verify they exist
+                    pdf_files = []
+                    for f in st.session_state.uploaded_files:
+                        if os.path.exists(f['path']):
+                            pdf_files.append({"path": f['path'], "pages": None})
+                        else:
+                            st.error(f"⚠️ File not found: {f['name']}")
                     
-                    # Merge PDFs
-                    output_path = os.path.join(UPLOAD_FOLDER, f"merged_{datetime.now().strftime('%Y%m%d_%H%M%S')}.pdf")
-                    pdf_processor.merge_pdfs(pdf_paths, output_path)
+                    if len(pdf_files) == 0:
+                        st.error("❌ No valid PDF files found to merge")
+                    elif len(pdf_files) < len(st.session_state.uploaded_files):
+                        st.warning(f"⚠️ Only {len(pdf_files)} out of {len(st.session_state.uploaded_files)} files found")
                     
-                    # Read merged PDF
-                    with open(output_path, 'rb') as f:
-                        st.session_state.merged_pdf = f.read()
-                    
-                    st.success("✅ PDFs merged successfully!")
+                    if len(pdf_files) > 0:
+                        # Merge PDFs
+                        output_path = os.path.join(UPLOAD_FOLDER, f"merged_{datetime.now().strftime('%Y%m%d_%H%M%S')}.pdf")
+                        result = pdf_processor.merge_pdfs(pdf_files, output_path)
+                        
+                        if result.get('success'):
+                            # Read merged PDF
+                            with open(output_path, 'rb') as f:
+                                st.session_state.merged_pdf = f.read()
+                            st.success("✅ PDFs merged successfully!")
+                        else:
+                            st.error(f"❌ {result.get('error', 'Unknown error during merge')}")
                     
                 except Exception as e:
                     st.error(f"❌ Error merging PDFs: {str(e)}")
+
     
     # Download merged PDF
     if st.session_state.merged_pdf:
