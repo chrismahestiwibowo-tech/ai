@@ -1,369 +1,175 @@
 """
-Flask application for PDF Merger Bot with web UI.
+Streamlit application for PDF Merger Bot.
 """
 import os
-import json
-import uuid
+import io
+import streamlit as st
 from datetime import datetime
-from flask import Flask, render_template, request, jsonify, send_file
-from werkzeug.utils import secure_filename
+from pathlib import Path
 from pdf_processor import PDFProcessor
 
+# Page configuration
+st.set_page_config(
+    page_title="PDF Merger",
+    page_icon="📄",
+    layout="wide",
+    initial_sidebar_state="expanded"
+)
 
-# Configuration
-UPLOAD_FOLDER = os.path.join(os.path.dirname(__file__), 'uploads')
-ALLOWED_EXTENSIONS = {'pdf'}
-MAX_FILE_SIZE = 50 * 1024 * 1024  # 50 MB
-
-app = Flask(__name__)
-app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
-app.config['MAX_CONTENT_LENGTH'] = MAX_FILE_SIZE
+# Initialize session state
+if 'uploaded_files' not in st.session_state:
+    st.session_state.uploaded_files = []
+if 'merged_pdf' not in st.session_state:
+    st.session_state.merged_pdf = None
 
 # Initialize PDF processor
 pdf_processor = PDFProcessor()
 
-# In-memory storage for sessions
-sessions = {}
+# Create uploads directory
+UPLOAD_FOLDER = os.path.join(os.path.dirname(__file__), 'uploads')
+os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 
+# Title and description
+st.title("📄 PDF Merger Tool")
+st.markdown("Combine multiple PDF files into one document effortlessly!")
 
-def allowed_file(filename):
-    """Check if file has allowed extension."""
-    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+# Sidebar
+with st.sidebar:
+    st.header("About")
+    st.markdown("""
+    **PDF Merger** is a simple tool to:
+    - Upload multiple PDF files
+    - Arrange them in any order
+    - Merge them into a single document
+    - Download the merged PDF
+    """)
+    
+    st.divider()
+    
+    st.subheader("📊 Statistics")
+    col1, col2 = st.columns(2)
+    with col1:
+        st.metric("Files Uploaded", len(st.session_state.uploaded_files))
+    with col2:
+        st.metric("Ready to Merge", "Yes" if len(st.session_state.uploaded_files) > 1 else "No")
 
+# Main content
+col1, col2 = st.columns([3, 1])
 
-def get_session_data(session_id):
-    """Retrieve session data."""
-    return sessions.get(session_id, {
-        'files': [],
-        'created': datetime.now().isoformat()
-    })
-
-
-def save_session_data(session_id, data):
-    """Save session data."""
-    sessions[session_id] = data
-
-
-@app.route('/')
-def index():
-    """Render main page."""
-    return render_template('index.html')
-
-
-@app.route('/api/session/new', methods=['POST'])
-def create_session():
-    """Create a new session."""
-    session_id = str(uuid.uuid4())[:8]
-    sessions[session_id] = {
-        'files': [],
-        'created': datetime.now().isoformat()
-    }
-    return jsonify({
-        'success': True,
-        'session_id': session_id
-    })
-
-
-@app.route('/api/upload', methods=['POST'])
-def upload_file():
-    """Handle file upload."""
-    try:
-        session_id = request.form.get('session_id')
-        
-        if not session_id or session_id not in sessions:
-            return jsonify({
-                'success': False,
-                'error': 'Invalid session'
-            }), 400
-        
-        if 'file' not in request.files:
-            return jsonify({
-                'success': False,
-                'error': 'No file provided'
-            }), 400
-        
-        file = request.files['file']
-        
-        if file.filename == '':
-            return jsonify({
-                'success': False,
-                'error': 'No file selected'
-            }), 400
-        
-        if not allowed_file(file.filename):
-            return jsonify({
-                'success': False,
-                'error': 'Only PDF files are allowed'
-            }), 400
-        
-        # Generate unique filename
-        unique_filename = f"{uuid.uuid4().hex}_{secure_filename(file.filename)}"
-        file_path = os.path.join(app.config['UPLOAD_FOLDER'], unique_filename)
-        
-        # Ensure upload folder exists
-        os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
-        
-        file.save(file_path)
-        
-        # Get PDF info
-        pdf_info = pdf_processor.get_pdf_info(file_path)
-        
-        if not pdf_info['success']:
-            os.remove(file_path)
-            return jsonify({
-                'success': False,
-                'error': 'Invalid PDF file'
-            }), 400
-        
-        # Add to session
-        session_data = get_session_data(session_id)
-        file_record = {
-            'id': str(uuid.uuid4())[:8],
-            'original_name': file.filename,
-            'filename': unique_filename,
-            'path': file_path,
-            'pages': pdf_info['page_count'],
-            'uploaded': datetime.now().isoformat()
-        }
-        session_data['files'].append(file_record)
-        save_session_data(session_id, session_data)
-        
-        return jsonify({
-            'success': True,
-            'file': {
-                'id': file_record['id'],
-                'name': file.filename,
-                'pages': pdf_info['page_count']
-            }
-        })
-        
-    except Exception as e:
-        return jsonify({
-            'success': False,
-            'error': f'Upload error: {str(e)}'
-        }), 500
-
-
-@app.route('/api/files', methods=['GET'])
-def get_files():
-    """Get uploaded files for session."""
-    try:
-        session_id = request.args.get('session_id')
-        
-        if not session_id or session_id not in sessions:
-            return jsonify({
-                'success': False,
-                'error': 'Invalid session'
-            }), 400
-        
-        session_data = get_session_data(session_id)
-        files = []
-        
-        for file_record in session_data['files']:
-            files.append({
-                'id': file_record['id'],
-                'name': file_record['original_name'],
-                'pages': file_record['pages']
-            })
-        
-        return jsonify({
-            'success': True,
-            'files': files
-        })
-        
-    except Exception as e:
-        return jsonify({
-            'success': False,
-            'error': str(e)
-        }), 500
-
-
-@app.route('/api/remove-file', methods=['POST'])
-def remove_file():
-    """Remove a file from session."""
-    try:
-        data = request.get_json()
-        session_id = data.get('session_id')
-        file_id = data.get('file_id')
-        
-        if not session_id or session_id not in sessions:
-            return jsonify({
-                'success': False,
-                'error': 'Invalid session'
-            }), 400
-        
-        session_data = get_session_data(session_id)
-        
-        for file_record in session_data['files']:
-            if file_record['id'] == file_id:
-                try:
-                    os.remove(file_record['path'])
-                except:
-                    pass
-                session_data['files'].remove(file_record)
-                save_session_data(session_id, session_data)
-                return jsonify({'success': True})
-        
-        return jsonify({
-            'success': False,
-            'error': 'File not found'
-        }), 404
-        
-    except Exception as e:
-        return jsonify({
-            'success': False,
-            'error': str(e)
-        }), 500
-
-
-@app.route('/api/merge', methods=['POST'])
-def merge_pdfs():
-    """Merge PDFs."""
-    try:
-        data = request.get_json()
-        session_id = data.get('session_id')
-        merge_config = data.get('config', [])
-        output_filename = data.get('output_filename', 'merged_document')
-        
-        if not session_id or session_id not in sessions:
-            return jsonify({
-                'success': False,
-                'error': 'Invalid session'
-            }), 400
-        
-        if not merge_config:
-            return jsonify({
-                'success': False,
-                'error': 'No files selected for merging'
-            }), 400
-        
-        session_data = get_session_data(session_id)
-        
-        # Sanitize output filename
-        output_filename = secure_filename(output_filename.replace('.pdf', ''))
-        if not output_filename:
-            output_filename = 'merged_document'
-        
-        # Build merge configuration with file paths
-        merge_list = []
-        for item in merge_config:
-            file_id = item.get('file_id')
-            pages = item.get('pages', 'all')
+with col1:
+    st.subheader("Step 1: Upload PDF Files")
+    
+    uploaded_files = st.file_uploader(
+        "Choose PDF files",
+        type="pdf",
+        accept_multiple_files=True,
+        help="You can select multiple PDF files at once"
+    )
+    
+    if uploaded_files:
+        # Save uploaded files to session state
+        file_details = []
+        for file in uploaded_files:
+            # Save file temporarily
+            unique_filename = f"{len(st.session_state.uploaded_files)}_{file.name}"
+            file_path = os.path.join(UPLOAD_FOLDER, unique_filename)
             
-            # Find file path
-            file_path = None
-            for file_record in session_data['files']:
-                if file_record['id'] == file_id:
-                    file_path = file_record['path']
-                    break
+            with open(file_path, 'wb') as f:
+                f.write(file.getbuffer())
             
-            if not file_path:
-                return jsonify({
-                    'success': False,
-                    'error': f'File not found: {file_id}'
-                }), 400
-            
-            # Convert page format if needed
-            if pages != 'all':
-                pages = [int(p) for p in pages]
-            
-            merge_list.append({
+            file_details.append({
+                'name': file.name,
                 'path': file_path,
-                'pages': pages
+                'size': file.size
             })
         
-        # Generate output filename with user-provided name
-        unique_suffix = uuid.uuid4().hex[:8]
-        final_filename = f"{output_filename}_{unique_suffix}.pdf"
-        output_path = os.path.join(app.config['UPLOAD_FOLDER'], final_filename)
-        
-        # Merge PDFs
-        result = pdf_processor.merge_pdfs(merge_list, output_path)
-        
-        if not result['success']:
-            return jsonify({
-                'success': False,
-                'error': result['error']
-            }), 400
-        
-        return jsonify({
-            'success': True,
-            'message': 'PDF merged successfully',
-            'file': final_filename,
-            'size': result['file_size']
-        })
-        
-    except Exception as e:
-        return jsonify({
-            'success': False,
-            'error': f'Merge error: {str(e)}'
-        }), 500
+        st.session_state.uploaded_files = file_details
+        st.success(f"✅ {len(uploaded_files)} file(s) uploaded successfully!")
 
+with col2:
+    st.subheader("Actions")
+    if st.button("🗑️ Clear All", use_container_width=True):
+        # Clean up files
+        for file_detail in st.session_state.uploaded_files:
+            if os.path.exists(file_detail['path']):
+                os.remove(file_detail['path'])
+        st.session_state.uploaded_files = []
+        st.session_state.merged_pdf = None
+        st.rerun()
 
-@app.route('/api/download/<filename>', methods=['GET'])
-def download_file(filename):
-    """Download merged PDF."""
-    try:
-        # Security: validate filename
-        if '..' in filename or '/' in filename or '\\' in filename:
-            return jsonify({
-                'success': False,
-                'error': 'Invalid filename'
-            }), 400
+# Display uploaded files
+if st.session_state.uploaded_files:
+    st.subheader("Step 2: Arrange Files")
+    
+    st.markdown("**Uploaded files (in order):**")
+    
+    # Display files in order
+    for idx, file_detail in enumerate(st.session_state.uploaded_files, 1):
+        col1, col2, col3 = st.columns([3, 1, 1])
         
-        file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+        with col1:
+            st.write(f"{idx}. {file_detail['name']} ({file_detail['size'] / 1024:.1f} KB)")
         
-        if not os.path.exists(file_path):
-            return jsonify({
-                'success': False,
-                'error': 'File not found'
-            }), 404
+        with col2:
+            if idx > 1 and st.button("⬆️", key=f"up_{idx}", help="Move up"):
+                st.session_state.uploaded_files[idx-1], st.session_state.uploaded_files[idx-2] = (
+                    st.session_state.uploaded_files[idx-2], st.session_state.uploaded_files[idx-1]
+                )
+                st.rerun()
         
-        # Extract the user-provided filename from the stored filename
-        # Format: "filename_XXXXXXXX.pdf"
-        base_name = filename.rsplit('_', 1)[0] if '_' in filename else 'merged_document'
-        download_name = f"{base_name}.pdf"
+        with col3:
+            if idx < len(st.session_state.uploaded_files) and st.button("⬇️", key=f"down_{idx}", help="Move down"):
+                st.session_state.uploaded_files[idx-1], st.session_state.uploaded_files[idx] = (
+                    st.session_state.uploaded_files[idx], st.session_state.uploaded_files[idx-1]
+                )
+                st.rerun()
+    
+    st.divider()
+    
+    # Merge button
+    col1, col2 = st.columns([1, 2])
+    
+    with col1:
+        if st.button("🔗 Merge PDFs", use_container_width=True, type="primary"):
+            with st.spinner("Merging PDFs..."):
+                try:
+                    # Get file paths
+                    pdf_paths = [f['path'] for f in st.session_state.uploaded_files]
+                    
+                    # Merge PDFs
+                    output_path = os.path.join(UPLOAD_FOLDER, f"merged_{datetime.now().strftime('%Y%m%d_%H%M%S')}.pdf")
+                    pdf_processor.merge_pdfs(pdf_paths, output_path)
+                    
+                    # Read merged PDF
+                    with open(output_path, 'rb') as f:
+                        st.session_state.merged_pdf = f.read()
+                    
+                    st.success("✅ PDFs merged successfully!")
+                    
+                except Exception as e:
+                    st.error(f"❌ Error merging PDFs: {str(e)}")
+    
+    # Download merged PDF
+    if st.session_state.merged_pdf:
+        st.subheader("Step 3: Download Merged PDF")
         
-        return send_file(
-            file_path,
-            as_attachment=True,
-            download_name=download_name,
-            mimetype='application/pdf'
+        st.download_button(
+            label="📥 Download Merged PDF",
+            data=st.session_state.merged_pdf,
+            file_name=f"merged_document_{datetime.now().strftime('%Y%m%d_%H%M%S')}.pdf",
+            mime="application/pdf",
+            use_container_width=True
         )
         
-    except Exception as e:
-        return jsonify({
-            'success': False,
-            'error': str(e)
-        }), 500
+        st.info("✨ Your merged PDF is ready! Click the button above to download it.")
 
+else:
+    st.info("👆 Start by uploading one or more PDF files above!")
 
-@app.route('/api/cleanup', methods=['POST'])
-def cleanup_session():
-    """Clean up session files."""
-    try:
-        data = request.get_json()
-        session_id = data.get('session_id')
-        
-        if session_id and session_id in sessions:
-            session_data = get_session_data(session_id)
-            for file_record in session_data['files']:
-                try:
-                    os.remove(file_record['path'])
-                except:
-                    pass
-            del sessions[session_id]
-        
-        return jsonify({'success': True})
-        
-    except Exception as e:
-        return jsonify({
-            'success': False,
-            'error': str(e)
-        }), 500
-
-
-if __name__ == '__main__':
-    os.makedirs(UPLOAD_FOLDER, exist_ok=True)
-    port = int(os.getenv('PORT', 5000))
-    app.run(debug=False, host='0.0.0.0', port=port, use_reloader=False)
+# Footer
+st.divider()
+st.markdown("""
+<div style="text-align: center; color: gray; font-size: 0.8em;">
+    <p>🚀 PDF Merger v1.0 | Made with Streamlit</p>
+</div>
+""", unsafe_allow_html=True)
