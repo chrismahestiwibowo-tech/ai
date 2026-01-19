@@ -44,6 +44,8 @@ with st.sidebar:
     - Download the merged PDF
     """)
     
+    st.info("🔒 **Security & Privacy:** Once you download your merged PDF, no files are saved in memory. Your privacy is our priority!")
+    
     st.divider()
     
     st.subheader("📊 Statistics")
