@@ -129,60 +129,56 @@ if st.session_state.uploaded_files:
     st.markdown("**📁 Arrange your files:**")
     st.info("💡 Use the arrow buttons to reorder, or delete files with the trash icon")
     
-    # Display files with control buttons
+    # Create placeholder for dynamic content
+    placeholder = st.empty()
+    
+    # First pass - check all buttons and collect actions
+    action_buttons = {}
     for idx, file_detail in enumerate(st.session_state.uploaded_files, 1):
-        cols = st.columns([0.3, 0.2, 0.2, 0.2, 3.5, 0.3])
         file_id = file_detail['id']
+        cols = st.columns([0.3, 0.2, 0.2, 0.2, 3.5, 0.3])
         
         with cols[0]:
-            st.markdown(f"**{idx}.**")
+            pass  # Number will be shown in second pass
         
         with cols[1]:
             if idx > 1:
-                if st.button("⬆️", key=f"up_{file_id}", help="Move up"):
-                    try:
-                        # Find current index and swap
-                        current_idx = next(i for i, f in enumerate(st.session_state.uploaded_files) if f['id'] == file_id)
-                        if current_idx > 0:
-                            # Swap with previous item
-                            temp = st.session_state.uploaded_files[current_idx - 1]
-                            st.session_state.uploaded_files[current_idx - 1] = st.session_state.uploaded_files[current_idx]
-                            st.session_state.uploaded_files[current_idx] = temp
-                            st.rerun()
-                    except (StopIteration, IndexError):
-                        st.error("Error moving file up")
-            else:
-                st.empty()
+                up_clicked = st.button("⬆️", key=f"up_{file_id}", help="Move up")
+                if up_clicked:
+                    current_idx = next(i for i, f in enumerate(st.session_state.uploaded_files) if f['id'] == file_id)
+                    if current_idx > 0:
+                        temp = st.session_state.uploaded_files[current_idx - 1]
+                        st.session_state.uploaded_files[current_idx - 1] = st.session_state.uploaded_files[current_idx]
+                        st.session_state.uploaded_files[current_idx] = temp
+                        st.rerun()
         
         with cols[2]:
             if idx < len(st.session_state.uploaded_files):
-                if st.button("⬇️", key=f"down_{file_id}", help="Move down"):
-                    try:
-                        # Find current index and swap
-                        current_idx = next(i for i, f in enumerate(st.session_state.uploaded_files) if f['id'] == file_id)
-                        if current_idx < len(st.session_state.uploaded_files) - 1:
-                            # Swap with next item
-                            temp = st.session_state.uploaded_files[current_idx + 1]
-                            st.session_state.uploaded_files[current_idx + 1] = st.session_state.uploaded_files[current_idx]
-                            st.session_state.uploaded_files[current_idx] = temp
-                            st.rerun()
-                    except (StopIteration, IndexError):
-                        st.error("Error moving file down")
-            else:
-                st.empty()
+                down_clicked = st.button("⬇️", key=f"down_{file_id}", help="Move down")
+                if down_clicked:
+                    current_idx = next(i for i, f in enumerate(st.session_state.uploaded_files) if f['id'] == file_id)
+                    if current_idx < len(st.session_state.uploaded_files) - 1:
+                        temp = st.session_state.uploaded_files[current_idx + 1]
+                        st.session_state.uploaded_files[current_idx + 1] = st.session_state.uploaded_files[current_idx]
+                        st.session_state.uploaded_files[current_idx] = temp
+                        st.rerun()
         
         with cols[3]:
-            if st.button("🗑️", key=f"remove_{file_id}", help="Remove"):
+            remove_clicked = st.button("🗑️", key=f"remove_{file_id}", help="Remove")
+            if remove_clicked:
                 if os.path.exists(file_detail['path']):
                     os.remove(file_detail['path'])
                 st.session_state.uploaded_files = [f for f in st.session_state.uploaded_files if f['id'] != file_id]
                 st.rerun()
-        
-        with cols[4]:
+    
+    # Second pass - display current state
+    st.markdown("**Current order:**")
+    for idx, file_detail in enumerate(st.session_state.uploaded_files, 1):
+        cols = st.columns([0.1, 5])
+        with cols[0]:
+            st.write(f"**{idx}.**")
+        with cols[1]:
             st.markdown(f"📄 {file_detail['name']} ({file_detail['size'] / 1024:.1f} KB)")
-        
-        with cols[5]:
-            st.empty()
     
     st.divider()
     
