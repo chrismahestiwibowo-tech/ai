@@ -30,6 +30,4 @@ Thumbs.db
 secrets.toml
 
 # Data files (FAQs and other data)
-*.csv
-!.gitkeep
 
