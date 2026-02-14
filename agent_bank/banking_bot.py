@@ -11,7 +11,7 @@ class BankingBot:
         
         Args:
             api_key (str): Mistral AI API key
-            csv_path (str): Path to the CSV file with FAQs
+            csv_path (str): Path to the CSV file with FAQs (relative or absolute)
         """
         self.api_key = api_key
         self.client = Mistral(api_key=api_key)
@@ -22,6 +22,16 @@ class BankingBot:
     def _load_faqs(self, csv_path):
         """Load FAQ data from CSV"""
         try:
+            # Resolve path - try current directory, then script directory
+            if not os.path.exists(csv_path):
+                # Try relative to script directory
+                script_dir = os.path.dirname(os.path.abspath(__file__))
+                csv_path = os.path.join(script_dir, csv_path)
+            
+            if not os.path.exists(csv_path):
+                # Try current working directory
+                csv_path = os.path.abspath(csv_path)
+            
             df = pd.read_csv(csv_path)
             return df
         except Exception as e:
