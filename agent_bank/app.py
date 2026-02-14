@@ -86,7 +86,9 @@ with col2:
         if message["role"] == "user":
             st.markdown(f"<div class='msg-box user-msg'><b>👤 You:</b><br>{message['content']}</div>", unsafe_allow_html=True)
         else:
-            st.markdown(f"<div class='msg-box bot-msg'><b>🤖 Assistant:</b><br>{message['content']}</div>", unsafe_allow_html=True)
+            # Bot messages - render with markdown support for **bold**, lists, etc.
+            st.markdown(f"<div class='msg-box bot-msg'><b>🤖 Assistant:</b></div>", unsafe_allow_html=True)
+            st.markdown(message['content'])
     
     st.markdown("---")
     
