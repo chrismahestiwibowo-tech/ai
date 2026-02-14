@@ -39,25 +39,42 @@ pip install streamlit pandas mistralai
 
 ### Configuration
 
-**Set your Mistral AI API key using environment variables:**
+**1. Set your Mistral AI API key using environment variables:**
 
-1. Create a `.env` file (copy from `.env.example`):
 ```bash
-cp .env.example .env
+export MISTRAL_API_KEY="your_mistral_api_key_here"
 ```
 
-2. Add your Mistral API key:
+Or create a `.env` file:
 ```
 MISTRAL_API_KEY=your_mistral_api_key_here
 ```
 
-3. For local development, the app also has a fallback key. For production, always use environment variables.
+**2. Add your FAQ CSV file:**
 
-**Get your API key:**
+The app expects a CSV file at `data/hbdb_banking_faqs.csv` with two columns:
+- Column 1: `Question` - The FAQ question
+- Column 2: `Answer` - The corresponding answer
+
+Create a `data/` folder if it doesn't exist:
+```bash
+mkdir -p data
+```
+
+Then place your `hbdb_banking_faqs.csv` file in the `data/` folder.
+
+**CSV Format Example:**
+```csv
+Question,Answer
+How do I open a savings account?,You can open a savings account by visiting our website or visiting a branch.
+What is HBDB Premier?,HBDB Premier is our premium banking service with exclusive benefits.
+```
+
+**3. Get your API key:**
 - Visit https://console.mistral.ai/
 - Create an account or sign in
 - Generate an API key
-- Copy it to your `.env` file
+- Add it to your environment variables
 
 ### Running the App
 
@@ -71,11 +88,18 @@ The app will open in your browser at `http://localhost:8501`
 
 ```
 agent_bank/
-├── app.py                    # Streamlit web interface
-├── banking_bot.py            # Core bot logic with Mistral AI integration
-├── hbdb_banking_faqs.csv     # FAQ database
-└── README.md                 # This file
+├── app.py                            # Streamlit web interface
+├── banking_bot.py                    # Core bot logic with Mistral AI integration
+├── requirements.txt                  # Python dependencies
+├── .gitignore                        # Git ignore file
+├── .env.example                      # Environment variables template
+├── data/                             # FAQ data folder
+│   ├── hbdb_banking_faqs.csv        # FAQ database (add your own CSV here)
+│   └── README.md                     # Data folder instructions
+└── README.md                         # This file
 ```
+
+**Note:** The `data/` folder is NOT included in the GitHub repository. You must add your own `hbdb_banking_faqs.csv` file.
 
 ## Usage
 

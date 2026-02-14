@@ -36,7 +36,7 @@ st.markdown("<div class='header'><h1>🏦 HBDB Banking Assistant</h1><p>Your AI-
 if not st.session_state.initialized:
     try:
         api_key = os.getenv("MISTRAL_API_KEY", "hKjvYtwfSKR7Ysd7WKvmItCtPL6YfjdR")
-        st.session_state.bot = BankingBot(api_key, "hbdb_banking_faqs.csv")
+        st.session_state.bot = BankingBot(api_key, "data/hbdb_banking_faqs.csv")
         st.session_state.initialized = True
         st.session_state.messages.append({
             "role": "bot",

@@ -28,3 +28,8 @@ Thumbs.db
 .env
 .env.local
 secrets.toml
+
+# Data files (FAQs and other data)
+*.csv
+!.gitkeep
+
