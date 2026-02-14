@@ -39,10 +39,25 @@ pip install streamlit pandas mistralai
 
 ### Configuration
 
-Set your Mistral AI API key in `app.py`:
-```python
-api_key = "your_mistral_api_key_here"
+**Set your Mistral AI API key using environment variables:**
+
+1. Create a `.env` file (copy from `.env.example`):
+```bash
+cp .env.example .env
 ```
+
+2. Add your Mistral API key:
+```
+MISTRAL_API_KEY=your_mistral_api_key_here
+```
+
+3. For local development, the app also has a fallback key. For production, always use environment variables.
+
+**Get your API key:**
+- Visit https://console.mistral.ai/
+- Create an account or sign in
+- Generate an API key
+- Copy it to your `.env` file
 
 ### Running the App
 
@@ -96,10 +111,58 @@ agent_bank/
 
 ## Requirements
 
-- streamlit
-- pandas
-- mistralai
-- python 3.8+
+- streamlit >= 1.28.0
+- pandas >= 2.0.0
+- mistralai >= 0.0.11
+- python-dotenv >= 1.0.0
+
+## Deployment
+
+### Streamlit Cloud Deployment
+
+1. Push your code to GitHub
+2. Go to https://share.streamlit.io/
+3. Sign in with your GitHub account
+4. Click "New app"
+5. Select your repository and branch
+6. Set the main file to `agent_bank/app.py`
+7. Click "Deploy"
+8. In the app settings, add your secrets:
+   - Go to Settings → Secrets
+   - Add `MISTRAL_API_KEY = "your_api_key_here"`
+
+### Docker Deployment
+
+Create a `Dockerfile`:
+```dockerfile
+FROM python:3.9-slim
+WORKDIR /app
+COPY requirements.txt .
+RUN pip install -r requirements.txt
+COPY . .
+CMD ["streamlit", "run", "app.py"]
+```
+
+Build and run:
+```bash
+docker build -t hbdb-banking-bot .
+docker run -e MISTRAL_API_KEY=your_key -p 8501:8501 hbdb-banking-bot
+```
+
+## Troubleshooting
+
+### Requirements Installation Error
+- Update package versions to latest compatible versions
+- Try: `pip install --upgrade pip setuptools wheel`
+
+### API Key Issues
+- Verify `MISTRAL_API_KEY` environment variable is set
+- Check your API key is valid at https://console.mistral.ai/
+- For local development, the app has a fallback key
+
+### CSV File Not Found
+- Ensure `hbdb_banking_faqs.csv` is in the same directory as `app.py`
+- Check file permissions
 
 ## Author
 

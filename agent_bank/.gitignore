@@ -18,6 +18,7 @@ env/
 # Streamlit
 .streamlit/cache/
 .streamlit/config.toml
+.streamlit/secrets.toml
 
 # OS
 .DS_Store
@@ -26,3 +27,4 @@ Thumbs.db
 # Environment variables
 .env
 .env.local
+secrets.toml
