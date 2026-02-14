@@ -180,7 +180,12 @@ def init_bot():
             st.error(f"❌ FAQ data file not found: {csv_path}")
             return False
         
-        api_key = "hKjvYtwfSKR7Ysd7WKvmItCtPL6YfjdR"
+        # Get API key from environment variables
+        api_key = os.getenv("MISTRAL_API_KEY", "hKjvYtwfSKR7Ysd7WKvmItCtPL6YfjdR")
+        
+        if not api_key or api_key == "your_api_key_here":
+            st.error("❌ Mistral API key not configured. Please set MISTRAL_API_KEY environment variable.")
+            return False
         
         st.session_state.bot = BankingBot(api_key, csv_path)
         st.session_state.bot_initialized = True
