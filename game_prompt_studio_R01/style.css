@@ -1,37 +1,37 @@
 :root {
-  --bg: #f5f6fb;
+  --bg: #f0f7f2;
   --surface: #ffffff;
-  --surface-2: #f0f1f8;
-  --border: #e2e4ef;
-  --text: #171a2c;
-  --muted: #5d6280;
-  --primary: #5b4cf0;
+  --surface-2: #e8f5ec;
+  --border: #c8e0ce;
+  --text: #1a2e1f;
+  --muted: #4d6e55;
+  --primary: #1b8a4a;
   --primary-ink: #ffffff;
-  --primary-soft: #ecebff;
+  --primary-soft: #d4f0df;
   --s: #0e8f6f;
-  --t: #2563eb;
-  --a: #c2410c;
-  --r: #a21caf;
-  --shadow: 0 1px 2px rgba(20, 24, 50, .06), 0 8px 24px rgba(20, 24, 50, .06);
+  --t: #1b6e3d;
+  --a: #b45309;
+  --r: #7c3aed;
+  --shadow: 0 1px 2px rgba(10, 40, 20, .06), 0 8px 24px rgba(10, 40, 20, .06);
   --radius: 14px;
   color-scheme: light;
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --bg: #0e1020;
-    --surface: #171a2e;
-    --surface-2: #1f2340;
-    --border: #2b3052;
-    --text: #e9eaf5;
-    --muted: #a0a5c4;
-    --primary: #8b7fff;
-    --primary-ink: #0e1020;
-    --primary-soft: #26254a;
+    --bg: #0a1a10;
+    --surface: #122118;
+    --surface-2: #1a3024;
+    --border: #264535;
+    --text: #e4f2e8;
+    --muted: #8fbf9c;
+    --primary: #34d399;
+    --primary-ink: #0a1a10;
+    --primary-soft: #143d28;
     --s: #34d3a6;
-    --t: #6ea4ff;
-    --a: #fb923c;
-    --r: #e879f9;
+    --t: #4ade80;
+    --a: #fbbf24;
+    --r: #c084fc;
     --shadow: 0 1px 2px rgba(0, 0, 0, .3), 0 8px 24px rgba(0, 0, 0, .25);
     color-scheme: dark;
   }
@@ -250,12 +250,12 @@ input[type="color"] {
 .output-head h2 { margin: 0; font-size: 16px; }
 .meta { color: var(--muted); font-size: 12px; }
 
-.star-legend { display: flex; flex-wrap: wrap; gap: 6px; margin: 10px 0; font-size: 12px; font-weight: 600; }
-.star-legend span { padding: 3px 9px; border-radius: 999px; background: var(--surface-2); }
-.star-legend .s { color: var(--s); }
-.star-legend .t { color: var(--t); }
-.star-legend .a { color: var(--a); }
-.star-legend .r { color: var(--r); }
+.prompt-legend { display: flex; flex-wrap: wrap; gap: 6px; margin: 10px 0; font-size: 12px; font-weight: 600; }
+.prompt-legend span { padding: 3px 9px; border-radius: 999px; background: var(--surface-2); }
+.prompt-legend .s { color: var(--s); }
+.prompt-legend .t { color: var(--t); }
+.prompt-legend .a { color: var(--a); }
+.prompt-legend .r { color: var(--r); }
 
 .prompt {
   margin: 0;

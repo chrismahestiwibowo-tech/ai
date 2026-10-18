@@ -1,5 +1,5 @@
-/* Game Prompt Studio — builds STAR (Situation, Task, Action, Result) prompts
-   for Gemini Canvas from the form on the left. No dependencies.
+/* Game Prompt Studio — builds structured AI prompts for Gemini Canvas
+   from the form on the left. No dependencies.
    Bilingual: every text is an { en, id } pair. The interface language and the
    prompt language are chosen separately. */
 
@@ -7,10 +7,10 @@
 
 const UI = {
   en: {
-    tagline: 'Design Islamic educational games, get a STAR prompt, paste it into Gemini Canvas.',
+    tagline: 'Design Islamic educational games, get an AI prompt, paste it into Gemini Canvas.',
     presetsAria: 'Presets',
     uiLangAria: 'Interface language',
-    startFrom: 'Start from:',
+    startFrom: 'Game Topics:',
     presetSahabat: '🌙 Companions Quiz',
     presetArabic: '📖 Arabic Vocab',
     presetHero: '⚔️ Muslim Heroes',
@@ -60,8 +60,8 @@ const UI = {
     fExtra: 'Extra requirements',
     phExtra: "Anything else, e.g. 'Show our madrasah name on the title screen', 'Add Bismillah before the game starts', 'Include Arabic calligraphy decorations'",
     outAria: 'Generated prompt',
-    outTitle: 'Your STAR prompt',
-    legend: ['S · Situation', 'T · Task', 'A · Action', 'R · Result'],
+    outTitle: 'Your AI prompt',
+    legend: ['Context', 'Objective', 'Instructions', 'Expected Output'],
     copy: '📋 Copy prompt',
     download: '⬇️ Download .txt',
     openGemini: '✨ Open Gemini',
@@ -86,10 +86,10 @@ const UI = {
     contextParsing: 'Reading files...',
   },
   id: {
-    tagline: 'Rancang game edukasi Islam, dapatkan prompt STAR, lalu tempel ke Gemini Canvas.',
+    tagline: 'Rancang game edukasi Islam, dapatkan prompt AI, lalu tempel ke Gemini Canvas.',
     presetsAria: 'Contoh siap pakai',
     uiLangAria: 'Bahasa tampilan',
-    startFrom: 'Mulai dari:',
+    startFrom: 'Topik Game:',
     presetSahabat: '🌙 Kuis Sahabat',
     presetArabic: '📖 Kosa Kata Arab',
     presetHero: '⚔️ Pahlawan Muslim',
@@ -139,8 +139,8 @@ const UI = {
     fExtra: 'Permintaan tambahan',
     phExtra: "Hal lain, mis. 'Tampilkan nama madrasah kami di layar judul', 'Tambahkan Bismillah sebelum game dimulai', 'Sertakan hiasan kaligrafi Arab'",
     outAria: 'Prompt yang dihasilkan',
-    outTitle: 'Prompt STAR kamu',
-    legend: ['S · Situasi', 'T · Tugas', 'A · Aksi', 'R · Hasil'],
+    outTitle: 'Prompt AI kamu',
+    legend: ['Konteks', 'Tujuan', 'Instruksi', 'Hasil yang Diharapkan'],
     copy: '📋 Salin prompt',
     download: '⬇️ Unduh .txt',
     openGemini: '✨ Buka Gemini',
@@ -201,8 +201,8 @@ const GENRES = {
       id: 'Mouse/sentuh untuk memilih jawaban; tombol keyboard 1–4 untuk memilih dan Enter untuk lanjut.',
     },
     content: {
-      en: (c) => `Write a question bank of at least ${c.levels * 6} original, factually accurate questions about ${c.theme}, stored as a JavaScript array of objects { question, options: [4 strings], answerIndex, explanation, level }. Spread them evenly across ${n('en', c.levels, 'level')}, from easiest to hardest.`,
-      id: (c) => `Tulis bank soal berisi minimal ${c.levels * 6} soal orisinal yang faktanya akurat tentang ${c.theme}, disimpan sebagai array objek JavaScript { question, options: [4 string], answerIndex, explanation, level }. Bagi rata ke ${c.levels} level, dari yang termudah sampai tersulit.`,
+      en: (c) => `Write a question bank of at least ${c.levels * 6} original, factually accurate questions about ${c.theme}, stored as a JavaScript array of objects { question, options: [4 strings], answerIndex, explanation, level }. Spread them evenly across ${n('en', c.levels, 'level')}, from easiest to hardest. CRITICAL: You MUST actually write ALL the questions with real content — do NOT leave the array empty, do NOT use placeholder text like "add your questions here", and do NOT skip generating the question data. Every question must have a meaningful educational explanation.`,
+      id: (c) => `Tulis bank soal berisi minimal ${c.levels * 6} soal orisinal yang faktanya akurat tentang ${c.theme}, disimpan sebagai array objek JavaScript { question, options: [4 string], answerIndex, explanation, level }. Bagi rata ke ${c.levels} level, dari yang termudah sampai tersulit. KRITIS: Kamu HARUS benar-benar menulis SEMUA pertanyaan dengan konten nyata — JANGAN biarkan array kosong, JANGAN gunakan teks placeholder seperti "tambahkan pertanyaan di sini", dan JANGAN lewatkan pembuatan data pertanyaan. Setiap pertanyaan harus punya penjelasan edukatif yang bermakna.`,
     },
   },
   memory: {
@@ -230,8 +230,8 @@ const GENRES = {
       id: 'Mouse/sentuh untuk membuka kartu; tombol panah untuk memindah fokus dan Enter/Spasi untuk membuka.',
     },
     content: {
-      en: (c) => `Create at least ${Math.max(12, c.levels * 6)} matching pairs related to ${c.theme} (for example term ↔ meaning, picture/emoji ↔ word, or question ↔ answer), stored as a JavaScript array.`,
-      id: (c) => `Buat minimal ${Math.max(12, c.levels * 6)} pasangan yang berkaitan dengan ${c.theme} (misalnya istilah ↔ arti, gambar/emoji ↔ kata, atau soal ↔ jawaban), disimpan sebagai array JavaScript.`,
+      en: (c) => `Create at least ${Math.max(12, c.levels * 6)} matching pairs related to ${c.theme} (for example term ↔ meaning, picture/emoji ↔ word, or question ↔ answer), stored as a JavaScript array. CRITICAL: You MUST actually write ALL the pairs with real content — do NOT leave the array empty or use placeholders.`,
+      id: (c) => `Buat minimal ${Math.max(12, c.levels * 6)} pasangan yang berkaitan dengan ${c.theme} (misalnya istilah ↔ arti, gambar/emoji ↔ kata, atau soal ↔ jawaban), disimpan sebagai array JavaScript. KRITIS: Kamu HARUS benar-benar menulis SEMUA pasangan dengan konten nyata — JANGAN biarkan array kosong atau gunakan placeholder.`,
     },
   },
   platformer: {
@@ -317,8 +317,8 @@ const GENRES = {
       id: 'Mouse/sentuh untuk memilih; tombol keyboard 1–4 untuk memilih dan Spasi untuk melewati animasi teks.',
     },
     content: {
-      en: (c) => `Write the complete branching story about ${c.theme} as a JavaScript object of scene nodes { id, text, choices: [{ label, next, effects, requires }] }, with at least ${Math.max(12, c.levels * 5)} scenes split into ${n('en', c.levels, 'chapter')}.`,
-      id: (c) => `Tulis cerita bercabang yang lengkap tentang ${c.theme} sebagai objek JavaScript berisi node adegan { id, text, choices: [{ label, next, effects, requires }] }, dengan minimal ${Math.max(12, c.levels * 5)} adegan yang dibagi ke dalam ${c.levels} bab.`,
+      en: (c) => `Write the complete branching story about ${c.theme} as a JavaScript object of scene nodes { id, text, choices: [{ label, next, effects, requires }] }, with at least ${Math.max(12, c.levels * 5)} scenes split into ${n('en', c.levels, 'chapter')}. CRITICAL: You MUST write ALL scene text, dialogue, and story content — do NOT leave scenes empty or use placeholder text. Each scene must have meaningful narrative.`,
+      id: (c) => `Tulis cerita bercabang yang lengkap tentang ${c.theme} sebagai objek JavaScript berisi node adegan { id, text, choices: [{ label, next, effects, requires }] }, dengan minimal ${Math.max(12, c.levels * 5)} adegan yang dibagi ke dalam ${c.levels} bab. KRITIS: Kamu HARUS menulis SEMUA teks adegan, dialog, dan konten cerita — JANGAN biarkan adegan kosong atau gunakan teks placeholder. Setiap adegan harus punya narasi yang bermakna.`,
     },
   },
   match3: {
@@ -463,8 +463,8 @@ const GENRES = {
       id: 'Pilih kontrol yang sesuai dengan game; dukung mouse/sentuh dan keyboard.',
     },
     content: {
-      en: (c) => `Create all the content the game needs (levels, items, questions or story) themed around ${c.theme}, enough for ${n('en', c.levels, 'level')}.`,
-      id: (c) => `Buat semua konten yang dibutuhkan game (level, item, soal, atau cerita) bertema ${c.theme}, cukup untuk ${c.levels} level.`,
+      en: (c) => `Create all the content the game needs (levels, items, questions or story) themed around ${c.theme}, enough for ${n('en', c.levels, 'level')}. CRITICAL: You MUST actually generate ALL the content — do NOT leave arrays empty, do NOT use placeholders, and do NOT skip content generation.`,
+      id: (c) => `Buat semua konten yang dibutuhkan game (level, item, soal, atau cerita) bertema ${c.theme}, cukup untuk ${c.levels} level. KRITIS: Kamu HARUS benar-benar membuat SEMUA konten — JANGAN biarkan array kosong, JANGAN gunakan placeholder, dan JANGAN lewatkan pembuatan konten.`,
     },
   },
 };
@@ -693,12 +693,175 @@ const FEATURES = [
 const PRESETS = {
   sahabatQuiz: {
     title: { en: 'Companions of the Prophet Challenge', id: 'Tantangan Sahabat Rasul' }, genre: 'quiz',
-    theme: { en: 'the Companions of the Prophet Muhammad ﷺ — their names, stories, and contributions to Islam', id: 'sahabat Nabi Muhammad ﷺ — nama, kisah, dan kontribusi mereka terhadap Islam' },
-    concept: { en: 'Answer questions about the Companions to build a golden mosque. Each correct answer adds a pillar. Wrong answers crack a wall. Learn about Abu Bakr, Umar, Uthman, Ali, Khadijah, Bilal, and more.', id: 'Jawab pertanyaan tentang Sahabat untuk membangun masjid emas. Setiap jawaban benar menambah pilar. Jawaban salah meretakkan dinding. Pelajari Abu Bakar, Umar, Utsman, Ali, Khadijah, Bilal, dan lainnya.' },
+    theme: { en: 'the Companions (Sahabah) of the Prophet Muhammad ﷺ — their names, life stories, sacrifices, Islamic values, and contributions to early Islam', id: 'sahabat (Sahabah) Nabi Muhammad ﷺ — nama, kisah hidup, pengorbanan, nilai-nilai Islam, dan kontribusi mereka terhadap Islam awal' },
+    concept: {
+      en: 'Answer questions about the Companions to build a golden mosque. Each correct answer adds a pillar. Wrong answers crack a wall. Questions must cover the real historical stories and Islamic values of each Companion — not just their names. After each answer, show a one-paragraph story about that Companion and the Islamic value they represent.',
+      id: 'Jawab pertanyaan tentang Sahabat untuk membangun masjid emas. Setiap jawaban benar menambah pilar. Jawaban salah meretakkan dinding. Pertanyaan harus mencakup kisah sejarah nyata dan nilai-nilai Islam dari setiap Sahabat — bukan hanya nama mereka. Setelah setiap jawaban, tampilkan satu paragraf kisah Sahabat tersebut dan nilai Islam yang mereka wakili.',
+    },
     audience: 'elementary', purpose: 'education',
-    objective: { en: 'Students can identify 10+ Companions of the Prophet and describe their key roles in early Islamic history', id: 'Siswa dapat mengenal 10+ Sahabat Rasul dan menjelaskan peran utama mereka dalam sejarah awal Islam' },
+    objective: { en: 'Students can identify 10+ Companions of the Prophet, tell their stories, and explain the Islamic values each Companion exemplifies — so young Muslims see them as role models', id: 'Siswa dapat mengenal 10+ Sahabat Rasul, menceritakan kisah mereka, dan menjelaskan nilai-nilai Islam yang diteladankan setiap Sahabat — agar generasi muda Muslim menjadikan mereka panutan' },
     levels: 3, lives: 3, session: '5', difficulty: 'easy', style: 'cartoon', palette: 'ocean', lang: 'bi', mood: 'cheerful',
     features: ['score', 'highscore', 'timer', 'lives', 'levels', 'difficultySelect', 'pause', 'tutorial', 'sfx', 'juice', 'avatar', 'achievements', 'mobile', 'a11y'],
+    knowledgeBase: {
+      en: `IMPORTANT: You MUST include real, factually accurate questions and stories about the following Companions. Do NOT generate empty or placeholder content. Each question MUST have an educational explanation that teaches the player about the Companion's story and Islamic values.
+
+COMPANION KNOWLEDGE BASE — use this to create questions:
+
+1. ABU BAKR AS-SIDDIQ (أبو بكر الصديق):
+   - First adult male to accept Islam. Best friend of the Prophet ﷺ.
+   - Accompanied the Prophet during the Hijrah (migration to Madinah), hiding in Cave Thawr.
+   - First Caliph of Islam after the Prophet's death. Held the Ummah together.
+   - Known as "As-Siddiq" (The Truthful) because he immediately believed the Prophet's account of Isra' Mi'raj.
+   - Freed Bilal ibn Rabah from slavery and torture.
+   - Islamic values: Truthfulness (Sidq), Loyalty, Generosity — he donated ALL his wealth for Islam.
+
+2. UMAR IBN AL-KHATTAB (عمر بن الخطاب):
+   - Second Caliph of Islam. Initially opposed Islam, then converted and became its strongest defender.
+   - Known as "Al-Faruq" (The One who distinguishes truth from falsehood).
+   - Under his rule, Islam expanded to Persia, Egypt, and Jerusalem. He entered Jerusalem humbly on foot.
+   - Established the Islamic calendar (Hijri), the Baitul Mal (public treasury), and the Shura (consultation) system.
+   - Famous for walking at night to check on his people's welfare. Once carried flour on his back to a hungry family.
+   - Islamic values: Justice (Adl), Courage, Humility, Accountability of leaders.
+
+3. UTHMAN IBN AFFAN (عثمان بن عفان):
+   - Third Caliph of Islam. Known as "Dhun-Nurain" (Possessor of Two Lights) because he married two daughters of the Prophet ﷺ: Ruqayyah and Umm Kulthum.
+   - Extremely wealthy merchant who spent his fortune for Islam. Bought the well of Rumah to provide free water for all Muslims in Madinah.
+   - Financed the army of Tabuk when no one else could — equipped 1/3 of the entire army.
+   - Compiled the Quran into one standard written copy (Mushaf) to preserve it for all time.
+   - Known for his shyness (Haya') — even the angels felt shy in his presence.
+   - Islamic values: Generosity (Karam), Modesty (Haya'), Preservation of knowledge.
+
+4. ALI IBN ABI TALIB (علي بن أبي طالب):
+   - Fourth Caliph. Cousin and son-in-law of the Prophet ﷺ (married Fatimah).
+   - First child/youth to accept Islam (around age 10).
+   - Slept in the Prophet's bed on the night of Hijrah, risking his life so the Prophet could escape.
+   - Known as "Bab al-Ilm" (Gate of Knowledge) — the Prophet ﷺ said: "I am the city of knowledge and Ali is its gate."
+   - Brave warrior: hero of the battles of Badr, Uhud, and Khandaq (he defeated Amr ibn Abd Wudd in single combat).
+   - Islamic values: Bravery (Shaja'ah), Knowledge (Ilm), Self-sacrifice, Love of the Prophet.
+
+5. KHADIJAH BINT KHUWAYLID (خديجة بنت خويلد):
+   - First wife of the Prophet ﷺ and the FIRST person ever to accept Islam.
+   - Successful businesswoman in Makkah — she proposed marriage to Muhammad ﷺ.
+   - Comforted and supported the Prophet when he received the first revelation in Cave Hira and was frightened. She said: "Allah will never disgrace you."
+   - Spent her entire wealth supporting Islam and the early Muslims during the boycott.
+   - Mother of Fatimah. The Prophet ﷺ never forgot her — he said she was the best woman of her time.
+   - Islamic values: Faith (Iman), Supportiveness, Sacrifice, Strength of women in Islam.
+
+6. BILAL IBN RABAH (بلال بن رباح):
+   - An enslaved Abyssinian (Ethiopian) who was among the first to accept Islam.
+   - His master Umayyah ibn Khalaf tortured him — placed a heavy rock on his chest under the burning sun. Bilal kept saying "Ahad, Ahad" (One, One — meaning Allah is One).
+   - Abu Bakr bought and freed him from slavery.
+   - Became the FIRST muezzin (caller to prayer) in Islam. His voice was beautiful and powerful.
+   - Shows that Islam rejects racism: the Prophet ﷺ said there is no superiority of one race over another.
+   - Islamic values: Steadfastness (Sabr), Equality in Islam, Devotion to Tawhid (Oneness of Allah).
+
+7. SALMAN AL-FARISI (سلمان الفارسي):
+   - Originally from Persia (Iran). Left his Zoroastrian family to search for the true religion.
+   - Traveled from Persia to Syria to Arabia, was sold into slavery, then freed.
+   - Suggested digging the trench (Khandaq) around Madinah during the Battle of the Trench — a Persian military strategy that saved the Muslims.
+   - The Prophet ﷺ said: "Salman is one of us, the Ahl al-Bayt (People of the House)."
+   - Islamic values: Seeking truth (Talab al-Ilm), Perseverance, Brotherhood in Islam transcends ethnicity.
+
+8. MUSAB IBN UMAIR (مصعب بن عمير):
+   - Was the most handsome and richest young man in Makkah before Islam. Wore the finest clothes.
+   - Gave up ALL his luxury when he accepted Islam. His family disowned him.
+   - The Prophet ﷺ sent him as the FIRST ambassador/teacher of Islam to Madinah — he taught the people of Madinah Islam before the Hijrah.
+   - Died as a martyr at the Battle of Uhud, so poor that his shroud was too short to cover his whole body.
+   - Islamic values: Sacrifice for faith, Da'wah (spreading Islam), Choosing faith over worldly comfort.
+
+9. ABDUR-RAHMAN IBN AUF (عبد الرحمن بن عوف):
+   - One of the ten Companions promised Paradise (Al-Ashara al-Mubashshara).
+   - Extremely successful merchant and one of the wealthiest Companions.
+   - When he migrated to Madinah, he refused to take charity. He asked only to be shown the marketplace, then built his fortune from scratch.
+   - Donated 700 camels loaded with goods for the cause of Islam. Once donated half his entire wealth.
+   - Islamic values: Self-reliance, Hard work, Generosity, Trust in Allah while taking action (Tawakkul).
+
+10. FATIMAH AZ-ZAHRA (فاطمة الزهراء):
+    - Youngest daughter of the Prophet ﷺ and Khadijah. Wife of Ali ibn Abi Talib.
+    - Known as "Az-Zahra" (The Radiant One). The Prophet ﷺ said she is the leader of the women of Paradise.
+    - Lived a simple life despite being the Prophet's daughter. Used to grind grain by hand until her hands blistered.
+    - When she asked the Prophet for a servant, he taught her to say SubhanAllah, Alhamdulillah, and Allahu Akbar before sleeping — this is better than a servant.
+    - Islamic values: Contentment (Qana'ah), Devotion to worship, Simplicity, Love between parent and child.
+
+Generate questions about ALL these Companions, covering: their titles/nicknames, key events, their sacrifices, their roles in battles and governance, and the Islamic values they represent. After each answer (right or wrong), show a short story paragraph teaching the player about that Companion.`,
+      id: `PENTING: Kamu HARUS menyertakan pertanyaan dan kisah yang nyata dan akurat secara fakta tentang Sahabat-sahabat berikut. JANGAN buat konten kosong atau placeholder. Setiap pertanyaan HARUS memiliki penjelasan edukatif yang mengajarkan pemain tentang kisah Sahabat dan nilai-nilai Islam.
+
+BASIS PENGETAHUAN SAHABAT — gunakan ini untuk membuat pertanyaan:
+
+1. ABU BAKAR ASH-SHIDDIQ (أبو بكر الصديق):
+   - Laki-laki dewasa pertama yang masuk Islam. Sahabat terdekat Nabi ﷺ.
+   - Menemani Nabi saat Hijrah ke Madinah, bersembunyi di Gua Tsur.
+   - Khalifah pertama Islam setelah wafatnya Nabi. Menjaga persatuan umat.
+   - Dijuluki "Ash-Shiddiq" (Yang Membenarkan) karena langsung membenarkan kisah Isra' Mi'raj.
+   - Membebaskan Bilal bin Rabah dari perbudakan dan penyiksaan.
+   - Nilai Islam: Kejujuran (Sidq), Kesetiaan, Kedermawanan — beliau menyumbangkan SELURUH hartanya untuk Islam.
+
+2. UMAR BIN AL-KHATHTHAB (عمر بن الخطاب):
+   - Khalifah kedua Islam. Awalnya menentang Islam, lalu masuk Islam dan menjadi pembela terkuatnya.
+   - Dijuluki "Al-Faruq" (Pembeda antara kebenaran dan kebatilan).
+   - Di bawah pemerintahannya, Islam meluas ke Persia, Mesir, dan Yerusalem. Beliau masuk Yerusalem dengan rendah hati berjalan kaki.
+   - Mendirikan kalender Islam (Hijriyah), Baitul Mal (kas negara), dan sistem Syura (musyawarah).
+   - Terkenal berjalan malam hari untuk memeriksa kesejahteraan rakyatnya. Pernah memikul tepung di punggungnya untuk keluarga yang kelaparan.
+   - Nilai Islam: Keadilan (Adl), Keberanian, Kerendahan hati, Tanggung jawab pemimpin.
+
+3. UTSMAN BIN AFFAN (عثمان بن عفان):
+   - Khalifah ketiga Islam. Dijuluki "Dzun Nurain" (Pemilik Dua Cahaya) karena menikahi dua putri Nabi ﷺ: Ruqayyah dan Ummu Kulsum.
+   - Pedagang sangat kaya yang menghabiskan hartanya untuk Islam. Membeli sumur Rumah untuk menyediakan air gratis bagi seluruh Muslim di Madinah.
+   - Membiayai pasukan Tabuk saat tidak ada yang mampu — melengkapi 1/3 seluruh pasukan.
+   - Mengumpulkan Al-Quran menjadi satu mushaf standar untuk melestarikannya sepanjang masa.
+   - Dikenal karena rasa malunya (Haya') — bahkan para malaikat pun merasa malu di hadapannya.
+   - Nilai Islam: Kedermawanan (Karam), Kesopanan (Haya'), Pelestarian ilmu pengetahuan.
+
+4. ALI BIN ABI THALIB (علي بن أبي طالب):
+   - Khalifah keempat. Sepupu dan menantu Nabi ﷺ (menikah dengan Fatimah).
+   - Anak/pemuda pertama yang masuk Islam (sekitar usia 10 tahun).
+   - Tidur di tempat tidur Nabi pada malam Hijrah, mempertaruhkan nyawanya agar Nabi bisa pergi.
+   - Dijuluki "Bab al-Ilm" (Pintu Ilmu) — Nabi ﷺ bersabda: "Aku adalah kota ilmu dan Ali adalah pintunya."
+   - Pejuang pemberani: pahlawan dalam perang Badar, Uhud, dan Khandaq.
+   - Nilai Islam: Keberanian (Syaja'ah), Ilmu, Pengorbanan diri, Cinta kepada Nabi.
+
+5. KHADIJAH BINTI KHUWAYLID (خديجة بنت خويلد):
+   - Istri pertama Nabi ﷺ dan ORANG PERTAMA yang masuk Islam.
+   - Pengusaha sukses di Makkah — beliau yang melamar Muhammad ﷺ.
+   - Menenangkan dan mendukung Nabi saat menerima wahyu pertama di Gua Hira. Beliau berkata: "Allah tidak akan pernah menghinakanmu."
+   - Menghabiskan seluruh kekayaannya untuk mendukung Islam selama pemboikotan.
+   - Nilai Islam: Keimanan, Dukungan, Pengorbanan, Kekuatan perempuan dalam Islam.
+
+6. BILAL BIN RABAH (بلال بن رباح):
+   - Budak dari Habasyah (Ethiopia) yang termasuk orang pertama masuk Islam.
+   - Tuannya Umayyah bin Khalaf menyiksanya — meletakkan batu besar di dadanya di bawah terik matahari. Bilal terus berkata "Ahad, Ahad" (Esa, Esa — Allah Maha Esa).
+   - Abu Bakar membeli dan membebaskannya dari perbudakan.
+   - Menjadi muadzin PERTAMA dalam Islam. Suaranya indah dan menggetarkan.
+   - Menunjukkan bahwa Islam menolak rasisme: Nabi ﷺ bersabda tidak ada kelebihan satu ras atas ras lainnya.
+   - Nilai Islam: Keteguhan (Sabr), Kesetaraan dalam Islam, Kesetiaan kepada Tauhid.
+
+7. SALMAN AL-FARISI (سلمان الفارسي):
+   - Berasal dari Persia (Iran). Meninggalkan keluarga Zoroasternya untuk mencari agama yang benar.
+   - Mengusulkan menggali parit (Khandaq) di sekitar Madinah — strategi militer Persia yang menyelamatkan kaum Muslim.
+   - Nabi ﷺ bersabda: "Salman adalah bagian dari kami, Ahlul Bait."
+   - Nilai Islam: Mencari kebenaran, Ketekunan, Persaudaraan Islam melampaui etnis.
+
+8. MUSH'AB BIN UMAIR (مصعب بن عمير):
+   - Pemuda paling tampan dan terkaya di Makkah sebelum Islam.
+   - Meninggalkan SEMUA kemewahan saat masuk Islam. Keluarganya mengusirnya.
+   - Duta/guru Islam PERTAMA yang dikirim ke Madinah.
+   - Syahid di Perang Uhud, begitu miskin hingga kain kafannya terlalu pendek.
+   - Nilai Islam: Pengorbanan untuk iman, Dakwah, Memilih iman di atas dunia.
+
+9. ABDURRAHMAN BIN AUF (عبد الرحمن بن عوف):
+   - Salah satu sepuluh sahabat yang dijamin masuk surga.
+   - Saat hijrah ke Madinah, menolak sedekah dan minta ditunjukkan pasar, lalu membangun kekayaannya dari nol.
+   - Menyumbangkan 700 unta bermuatan barang untuk Islam.
+   - Nilai Islam: Kemandirian, Kerja keras, Kedermawanan, Tawakkal.
+
+10. FATIMAH AZ-ZAHRA (فاطمة الزهراء):
+    - Putri bungsu Nabi ﷺ dan Khadijah. Istri Ali bin Abi Thalib.
+    - Hidup sederhana meski putri Nabi. Menggiling gandum sendiri hingga tangannya melepuh.
+    - Nabi ﷺ mengajarkannya membaca SubhanAllah, Alhamdulillah, Allahu Akbar sebelum tidur — ini lebih baik dari seorang pelayan.
+    - Nilai Islam: Qana'ah (Puas dengan yang ada), Ibadah, Kesederhanaan, Kasih sayang.
+
+Buat pertanyaan tentang SEMUA Sahabat ini, mencakup: julukan mereka, peristiwa penting, pengorbanan, peran dalam perang dan pemerintahan, serta nilai-nilai Islam yang mereka teladankan. Setelah setiap jawaban (benar atau salah), tampilkan paragraf singkat yang mengajarkan pemain tentang Sahabat tersebut.`,
+    },
   },
   arabicVocab: {
     title: { en: 'Arabic Word Explorer', id: 'Penjelajah Kata Arab' }, genre: 'quiz',
@@ -711,12 +874,104 @@ const PRESETS = {
   },
   heroAdventure: {
     title: { en: 'Muslim Heroes Journey', id: 'Perjalanan Pahlawan Muslim' }, genre: 'adventure',
-    theme: { en: 'exploring the lives of great Muslim heroes from the era of Rasulullah ﷺ — Khalid ibn al-Walid, Salahuddin, Hamzah ibn Abdul-Muttalib, Musab ibn Umair, and others', id: 'menjelajahi kehidupan pahlawan Muslim hebat dari era Rasulullah ﷺ — Khalid bin Walid, Salahuddin, Hamzah bin Abdul Muthalib, Mush\'ab bin Umair, dan lainnya' },
-    concept: { en: 'Travel through historical Islamic locations, meet Muslim heroes, answer questions about their stories, and collect wisdom scrolls. Each hero teaches a virtue: bravery, justice, generosity, or knowledge.', id: 'Berpetualang ke lokasi bersejarah Islam, bertemu pahlawan Muslim, jawab pertanyaan tentang kisah mereka, dan kumpulkan gulungan hikmah. Setiap pahlawan mengajarkan satu kebajikan: keberanian, keadilan, kedermawanan, atau ilmu.' },
+    theme: { en: 'exploring the lives of great Muslim heroes from the era of Rasulullah ﷺ — their battles, sacrifices, and the Islamic values that made them legendary', id: 'menjelajahi kehidupan pahlawan Muslim hebat dari era Rasulullah ﷺ — pertempuran, pengorbanan, dan nilai-nilai Islam yang membuat mereka legendaris' },
+    concept: {
+      en: 'Travel through historical Islamic locations, meet Muslim heroes face-to-face, hear their stories told in their own words, and make choices that reflect Islamic values. Each hero teaches a virtue. The story must contain REAL historical events, not generic text.',
+      id: 'Berpetualang ke lokasi bersejarah Islam, bertemu pahlawan Muslim secara langsung, dengarkan kisah mereka, dan buat pilihan yang mencerminkan nilai-nilai Islam. Setiap pahlawan mengajarkan satu kebajikan. Cerita harus berisi peristiwa sejarah NYATA, bukan teks generik.',
+    },
     audience: 'middleSchool', purpose: 'education',
-    objective: { en: 'Students can narrate the key stories of 8+ Muslim heroes and the virtues they represent', id: 'Siswa dapat menceritakan kisah utama 8+ pahlawan Muslim dan kebajikan yang mereka wakili' },
+    objective: { en: 'Young Muslims can narrate the key stories of 8+ Muslim heroes, understand the Islamic values they represent, and see them as role models', id: 'Generasi muda Muslim dapat menceritakan kisah 8+ pahlawan Muslim, memahami nilai-nilai Islam mereka, dan menjadikan mereka panutan' },
     levels: 5, lives: 3, session: '10', difficulty: 'normal', style: 'fantasy', palette: 'earth', lang: 'bi', mood: 'mysterious',
     features: ['score', 'levels', 'pause', 'tutorial', 'sfx', 'music', 'juice', 'achievements', 'hints', 'settings', 'mobile', 'a11y'],
+    knowledgeBase: {
+      en: `IMPORTANT: Each chapter MUST tell the REAL historical story of these heroes. Do NOT generate empty scenes or placeholder text. Every scene must contain actual historical events and Islamic values.
+
+MUSLIM HEROES KNOWLEDGE BASE:
+
+CHAPTER 1 — KHALID IBN AL-WALID (خالد بن الوليد) "The Sword of Allah"
+- Location: Battlefields of Arabia and Syria
+- Before Islam: Fought AGAINST Muslims at the Battle of Uhud. His cavalry charge caused the Muslims' setback.
+- Conversion: Accepted Islam in 8 AH. The Prophet ﷺ gave him the title "Saifullah" (Sword of Allah).
+- Key battles: Led the Muslim victory at the Battle of Mutah (fought with 3,000 against 200,000 Romans). Conquered Iraq and Syria. Never lost a single battle in his entire career — over 100 battles.
+- Famous moment: At Mutah, he broke 9 swords fighting. The Prophet ﷺ announced the battle's events via revelation before any messenger arrived.
+- Islamic value: COURAGE (Shaja'ah) — true bravery is using your strength for the truth after finding it.
+
+CHAPTER 2 — HAMZAH IBN ABDUL-MUTTALIB (حمزة بن عبد المطلب) "The Lion of Allah"
+- Location: Makkah and the Battle of Uhud
+- The Prophet's uncle. Was known as the strongest and bravest man in Makkah — a feared hunter and warrior.
+- Accepted Islam when he saw Abu Jahl insult the Prophet ﷺ. Stormed into the Ka'bah and struck Abu Jahl, declaring: "I am now a Muslim!"
+- Hero of the Battle of Badr — killed many enemy leaders in single combat.
+- Martyred at the Battle of Uhud by Wahshi's spear. His body was mutilated by Hind bint Utbah. The Prophet ﷺ wept deeply.
+- The Prophet ﷺ called him "Sayyid al-Shuhada" (Master of the Martyrs).
+- Islamic value: DEFENDING THE TRUTH — standing up against oppression even when it's dangerous.
+
+CHAPTER 3 — MUSAB IBN UMAIR (مصعب بن عمير) "The First Ambassador"
+- Location: Makkah → Madinah
+- Was the richest, most handsome young man in Makkah. Wore perfume that people could smell from far away.
+- Secretly accepted Islam. When his mother found out, she imprisoned and starved him. He chose faith over comfort.
+- The Prophet ﷺ sent him to Madinah as the FIRST Islamic teacher — he converted most of Madinah to Islam before the Hijrah.
+- Martyred at Uhud carrying the Muslim banner. When his right hand was cut, he held it with his left. When both were cut, he held it with his stumps until he died.
+- His shroud was so short: if they covered his head, his feet showed; if they covered his feet, his head showed.
+- Islamic value: SACRIFICE — giving up worldly luxury for the sake of Allah and Da'wah.
+
+CHAPTER 4 — SALAHUDDIN AL-AYYUBI (صلاح الدين الأيوبي) "The Liberator of Jerusalem"
+- Location: Jerusalem, Egypt, Syria (12th century)
+- United the divided Muslim lands of Egypt and Syria.
+- Liberated Jerusalem from the Crusaders in 1187 CE after the Battle of Hattin.
+- When he conquered Jerusalem, he did NOT massacre the inhabitants (unlike the Crusaders who had slaughtered Muslims and Jews when they took it). He let Christians leave safely and even provided transport for the elderly.
+- His enemy King Richard the Lionheart fell ill — Salahuddin sent him his own physician and fresh fruit.
+- Died with almost no personal wealth despite ruling a vast empire.
+- Islamic value: MERCY and JUSTICE — even in victory, treat your enemies with dignity. This is the Islamic way of warfare.
+
+CHAPTER 5 — SUMAYYAH BINT KHAYYAT (سمية بنت خياط) "The First Martyr"
+- Location: Makkah
+- An enslaved woman. She and her husband Yasir and son Ammar were among the first to accept Islam.
+- Abu Jahl tortured the entire family in the scorching desert to make them renounce Islam.
+- She refused. Abu Jahl killed her with a spear — she became the FIRST martyr (shaheed) in Islam.
+- The Prophet ﷺ passed by them during their torture and said: "Patience, O family of Yasir! Your appointment is in Paradise."
+- Her son Ammar later became a great Companion and warrior.
+- Islamic value: STEADFASTNESS IN FAITH — holding on to your belief even when facing death. A woman was the first to give her life for Islam.
+
+Generate the complete branching story with REAL dialogue, historical details, and scenes that immerse the player in these events. At decision points, the correct Islamic choice should reflect the value that hero represents.`,
+      id: `PENTING: Setiap bab HARUS menceritakan kisah sejarah NYATA dari para pahlawan ini. JANGAN buat adegan kosong atau teks placeholder. Setiap adegan harus berisi peristiwa sejarah aktual dan nilai-nilai Islam.
+
+BASIS PENGETAHUAN PAHLAWAN MUSLIM:
+
+BAB 1 — KHALID BIN WALID (خالد بن الوليد) "Pedang Allah"
+- Sebelum Islam: Bertempur MELAWAN Muslim di Perang Uhud.
+- Masuk Islam tahun 8 H. Nabi ﷺ memberinya gelar "Saifullah" (Pedang Allah).
+- Memimpin kemenangan Muslim di Perang Mutah (3.000 vs 200.000 Romawi). Menaklukkan Irak dan Syam. Tidak pernah kalah dalam 100+ pertempuran.
+- Nilai Islam: KEBERANIAN — menggunakan kekuatan untuk kebenaran.
+
+BAB 2 — HAMZAH BIN ABDUL MUTHALIB (حمزة بن عبد المطلب) "Singa Allah"
+- Paman Nabi ﷺ. Pria terkuat di Makkah.
+- Masuk Islam saat melihat Abu Jahal menghina Nabi ﷺ. Memasuki Ka'bah dan memukul Abu Jahal.
+- Pahlawan Perang Badar. Syahid di Perang Uhud oleh tombak Wahsyi.
+- Nabi ﷺ menyebutnya "Sayyid asy-Syuhada" (Pemimpin Para Syuhada).
+- Nilai Islam: MEMBELA KEBENARAN.
+
+BAB 3 — MUSH'AB BIN UMAIR (مصعب بن عمير) "Duta Pertama"
+- Pemuda terkaya dan tertampan di Makkah. Memilih iman di atas kemewahan.
+- Guru Islam PERTAMA yang dikirim ke Madinah — mengislamkan sebagian besar penduduk Madinah.
+- Syahid di Uhud membawa bendera Muslim. Kain kafannya terlalu pendek.
+- Nilai Islam: PENGORBANAN untuk dakwah.
+
+BAB 4 — SALAHUDDIN AL-AYYUBI (صلاح الدين الأيوبي) "Pembebas Yerusalem"
+- Membebaskan Yerusalem dari Tentara Salib tahun 1187 M setelah Perang Hattin.
+- TIDAK membantai penduduk (berbeda dengan Tentara Salib). Membiarkan Kristen pergi dengan aman.
+- Musuhnya Raja Richard sakit — Salahuddin mengirimkan dokter dan buah segar.
+- Wafat hampir tanpa harta pribadi meski menguasai kerajaan luas.
+- Nilai Islam: KASIH SAYANG dan KEADILAN.
+
+BAB 5 — SUMAYYAH BINTI KHAYYAT (سمية بنت خياط) "Syahid Pertama"
+- Budak perempuan. Keluarganya (suami Yasir, anak Ammar) termasuk yang pertama masuk Islam.
+- Abu Jahal menyiksa seluruh keluarga. Sumayyah menolak meninggalkan Islam.
+- Abu Jahal membunuhnya — menjadi SYAHID PERTAMA dalam Islam.
+- Nabi ﷺ bersabda: "Bersabarlah, wahai keluarga Yasir! Janji kalian adalah surga."
+- Nilai Islam: KETEGUHAN IMAN — seorang perempuan yang pertama memberikan nyawanya untuk Islam.
+
+Buat cerita bercabang lengkap dengan dialog NYATA, detail sejarah, dan adegan yang membenamkan pemain dalam peristiwa ini.`,
+    },
   },
   hijaiyahMemory: {
     title: { en: 'Arabic Alphabet Match', id: 'Cocokkan Hijaiyah' }, genre: 'memory',
@@ -735,6 +990,93 @@ const PRESETS = {
     objective: { en: 'Students can name and explain all Six Articles of Faith with evidence from the Quran and Hadith', id: 'Siswa dapat menyebutkan dan menjelaskan 6 Rukun Iman beserta dalil dari Al-Quran dan Hadis' },
     levels: 3, lives: 3, session: '5', difficulty: 'easy', style: 'cartoon', palette: 'ocean', lang: 'bi', mood: 'cheerful',
     features: ['score', 'highscore', 'timer', 'lives', 'levels', 'difficultySelect', 'pause', 'tutorial', 'sfx', 'juice', 'achievements', 'hints', 'arabicTTS', 'mobile', 'a11y'],
+    knowledgeBase: {
+      en: `IMPORTANT: Generate factually accurate questions with REAL Quran and Hadith references. Do NOT leave the question bank empty.
+
+SIX ARTICLES OF FAITH (ARKAN AL-IMAN) KNOWLEDGE BASE:
+
+1. BELIEF IN ALLAH (الإيمان بالله):
+   - Allah is One (Tawhid). "Say: He is Allah, the One" (Quran 112:1).
+   - Allah has 99 Beautiful Names (Asma ul-Husna): Ar-Rahman (Most Merciful), Al-Alim (All-Knowing), Al-Khaliq (The Creator), etc.
+   - Nothing is like Allah: "There is nothing like unto Him" (Quran 42:11).
+   - Three types of Tawhid: Rububiyyah (Lordship), Uluhiyyah (Worship), Asma wa Sifat (Names and Attributes).
+
+2. BELIEF IN THE ANGELS (الإيمان بالملائكة):
+   - Created from light (nur). They never disobey Allah.
+   - Jibril (Gabriel): Brings revelation. Brought the Quran to Prophet Muhammad ﷺ.
+   - Mikail (Michael): In charge of rain and sustenance.
+   - Israfil: Will blow the trumpet (Sur) on the Day of Judgment.
+   - Izrail/Malak al-Maut: Angel of Death.
+   - Raqib and Atid: Record every person's good and bad deeds.
+   - Munkar and Nakir: Question people in the grave.
+   - Malik: Guardian of Hellfire. Ridwan: Guardian of Paradise.
+
+3. BELIEF IN THE HOLY BOOKS (الإيمان بالكتب):
+   - Tawrat (Torah) — revealed to Prophet Musa (Moses).
+   - Zabur (Psalms) — revealed to Prophet Dawud (David).
+   - Injil (Gospel) — revealed to Prophet Isa (Jesus).
+   - Quran — revealed to Prophet Muhammad ﷺ. The final and preserved book.
+   - Suhuf (Scrolls) of Ibrahim and Musa.
+   - The Quran confirms and supersedes all previous scriptures.
+
+4. BELIEF IN THE PROPHETS AND MESSENGERS (الإيمان بالرسل):
+   - 25 Prophets named in the Quran. First: Adam. Last: Muhammad ﷺ.
+   - Five major Prophets (Ulul Azm): Nuh, Ibrahim, Musa, Isa, Muhammad ﷺ.
+   - All Prophets preached Tawhid (Oneness of Allah).
+   - Muhammad ﷺ is the Seal of the Prophets — no prophet after him.
+
+5. BELIEF IN THE DAY OF JUDGMENT (الإيمان باليوم الآخر):
+   - Everyone will be resurrected and judged by Allah.
+   - The book of deeds: right hand = Paradise, left hand = Hellfire.
+   - The Scale (Mizan) will weigh good and bad deeds.
+   - The Bridge (Sirat) over Hellfire that everyone must cross.
+   - Signs of the Day: appearance of Dajjal, return of Isa, rising of the sun from the west.
+
+6. BELIEF IN DIVINE PREDESTINATION (الإيمان بالقدر):
+   - Allah knows everything past, present, and future.
+   - Everything is written in Al-Lawh Al-Mahfuz (The Preserved Tablet).
+   - Nothing happens without Allah's will.
+   - Humans still have free will and are responsible for their choices.
+   - Hadith: "Be mindful of Allah, and you will find Him in front of you" (Tirmidhi).
+
+Generate questions covering ALL six articles with specific names, Quran references, and explanations.`,
+      id: `PENTING: Buat pertanyaan yang akurat secara fakta dengan referensi Al-Quran dan Hadis NYATA. JANGAN biarkan bank soal kosong.
+
+BASIS PENGETAHUAN 6 RUKUN IMAN:
+
+1. IMAN KEPADA ALLAH (الإيمان بالله):
+   - Allah itu Esa (Tauhid). "Katakanlah: Dia-lah Allah, Yang Maha Esa" (QS Al-Ikhlas 112:1).
+   - Allah memiliki 99 Asma ul-Husna: Ar-Rahman, Al-Alim, Al-Khaliq, dll.
+   - Tiga jenis Tauhid: Rububiyyah, Uluhiyyah, Asma wa Sifat.
+
+2. IMAN KEPADA MALAIKAT (الإيمان بالملائكة):
+   - Diciptakan dari cahaya (nur). Tidak pernah mendurhakai Allah.
+   - Jibril: membawa wahyu. Mikail: hujan dan rezeki. Israfil: meniup terompet. Izrail: pencabut nyawa.
+   - Raqib dan Atid: mencatat amal. Munkar dan Nakir: bertanya di kubur.
+   - Malik: penjaga neraka. Ridwan: penjaga surga.
+
+3. IMAN KEPADA KITAB-KITAB (الإيمان بالكتب):
+   - Taurat → Musa. Zabur → Dawud. Injil → Isa. Al-Quran → Muhammad ﷺ.
+   - Al-Quran kitab terakhir dan terjaga.
+
+4. IMAN KEPADA RASUL-RASUL (الإيمان بالرسل):
+   - 25 Nabi disebutkan dalam Al-Quran. Pertama: Adam. Terakhir: Muhammad ﷺ.
+   - Lima Ulul Azm: Nuh, Ibrahim, Musa, Isa, Muhammad ﷺ.
+   - Muhammad ﷺ adalah penutup para Nabi.
+
+5. IMAN KEPADA HARI AKHIR (الإيمان باليوم الآخر):
+   - Semua manusia dibangkitkan dan diadili Allah.
+   - Kitab amal: tangan kanan = surga, tangan kiri = neraka.
+   - Timbangan (Mizan), Jembatan (Shirath).
+   - Tanda-tanda: Dajjal, turunnya Isa, matahari terbit dari barat.
+
+6. IMAN KEPADA QADA DAN QADAR (الإيمان بالقدر):
+   - Allah mengetahui segala yang telah dan akan terjadi.
+   - Segala sesuatu tertulis di Lauhul Mahfuz.
+   - Manusia tetap memiliki kehendak bebas dan bertanggung jawab.
+
+Buat pertanyaan yang mencakup SEMUA enam rukun dengan nama spesifik, referensi Al-Quran, dan penjelasan.`,
+    },
   },
   rukunIslam: {
     title: { en: 'The Five Pillars of Islam', id: 'Lima Rukun Islam' }, genre: 'quiz',
@@ -744,6 +1086,83 @@ const PRESETS = {
     objective: { en: 'Students can explain the Five Pillars of Islam, their requirements, and practical application in daily Muslim life', id: 'Siswa dapat menjelaskan 5 Rukun Islam, syarat-syaratnya, dan penerapan praktis dalam kehidupan Muslim sehari-hari' },
     levels: 5, lives: 3, session: '5', difficulty: 'easy', style: 'flat', palette: 'sunset', lang: 'bi', mood: 'cheerful',
     features: ['score', 'highscore', 'timer', 'lives', 'levels', 'difficultySelect', 'pause', 'tutorial', 'sfx', 'juice', 'avatar', 'achievements', 'hints', 'arabicTTS', 'mobile', 'a11y'],
+    knowledgeBase: {
+      en: `IMPORTANT: Generate factually accurate questions about ALL Five Pillars. Do NOT leave the game empty.
+
+FIVE PILLARS OF ISLAM KNOWLEDGE BASE:
+
+1. SHAHADA (الشهادة) — Declaration of Faith:
+   - Arabic: "أشهد أن لا إله إلا الله وأشهد أن محمداً رسول الله"
+   - "I bear witness that there is no god but Allah, and Muhammad is the Messenger of Allah."
+   - Two parts: Tawhid (Oneness of Allah) and Risalah (Prophethood of Muhammad ﷺ).
+   - Saying the Shahada with sincere belief is how a person enters Islam.
+   - It is recited in the Adhan (call to prayer), in Tashahhud during Salah, and when a baby is born.
+
+2. SALAH (الصلاة) — Prayer:
+   - Five daily prayers: Fajr (dawn, 2 rak'at), Dhuhr (noon, 4), Asr (afternoon, 4), Maghrib (sunset, 3), Isha (night, 4).
+   - Obligatory from puberty. Must face the Qiblah (Ka'bah in Makkah).
+   - Wudu (ablution) is required before prayer: wash hands, rinse mouth, nose, face, arms to elbows, wipe head, wash feet.
+   - Key positions: Qiyam (standing), Ruku' (bowing), Sujud (prostrating), Juloos (sitting).
+   - Jumu'ah (Friday prayer): replaces Dhuhr, includes a Khutbah (sermon), prayed in congregation.
+   - The Prophet ﷺ said: "The first thing a person will be asked about on the Day of Judgment is prayer."
+
+3. ZAKAT (الزكاة) — Almsgiving:
+   - 2.5% of savings above the Nisab (minimum threshold) given annually.
+   - Eight categories of recipients mentioned in Quran 9:60: the poor, the needy, Zakat collectors, those whose hearts are to be reconciled, freeing slaves, those in debt, in the cause of Allah, and travelers.
+   - Purifies wealth and the soul. "Take from their wealth a charity to purify and cleanse them" (Quran 9:103).
+   - Different from Sadaqah (voluntary charity) — Zakat is obligatory.
+   - Zakat al-Fitr: given before Eid al-Fitr prayer, about 2.5 kg of staple food per person.
+
+4. SAWM (الصوم) — Fasting during Ramadan:
+   - Fast from dawn (Fajr) to sunset (Maghrib) during the month of Ramadan — no food, drink, or bad behavior.
+   - Suhoor: pre-dawn meal. Iftar: meal to break the fast at sunset.
+   - Exceptions: travelers, sick, pregnant/nursing women, children, elderly — they make up days later or pay Fidyah.
+   - Laylat al-Qadr (Night of Power): better than 1,000 months (Quran 97:3). Falls in the last 10 nights of Ramadan.
+   - Teaches self-discipline, empathy for the hungry, and gratitude to Allah.
+   - The Prophet ﷺ said: "Whoever fasts Ramadan with faith and seeking reward, all past sins are forgiven."
+
+5. HAJJ (الحج) — Pilgrimage to Makkah:
+   - Once in a lifetime for those physically and financially able. Performed in Dhul Hijjah (12th month).
+   - Key rituals: Ihram (white garments), Tawaf (7 circuits around the Ka'bah), Sa'i (walking between Safa and Marwah), standing at Arafat, stoning the Jamarat, sacrifice of an animal (Qurbani).
+   - Arafat: The most important day — the Prophet ﷺ said "Hajj is Arafat."
+   - Eid al-Adha: celebrates Prophet Ibrahim's willingness to sacrifice his son Ismail as commanded by Allah.
+   - All pilgrims wear the same white Ihram — showing equality before Allah regardless of wealth or status.
+   - Umrah: the "minor pilgrimage," can be performed anytime.
+
+Generate questions about ALL five pillars with Arabic terms, practical details, and Quran/Hadith references.`,
+      id: `PENTING: Buat pertanyaan yang akurat tentang SEMUA Lima Rukun Islam. JANGAN biarkan game kosong.
+
+BASIS PENGETAHUAN 5 RUKUN ISLAM:
+
+1. SYAHADAT (الشهادة):
+   - "أشهد أن لا إله إلا الله وأشهد أن محمداً رسول الله"
+   - Dua bagian: Tauhid dan Risalah.
+   - Diucapkan di Adzan, Tasyahhud, dan saat bayi lahir.
+
+2. SHALAT (الصلاة):
+   - Lima waktu: Subuh (2 rakaat), Dhuhur (4), Ashar (4), Maghrib (3), Isya (4).
+   - Wajib sejak baligh. Menghadap Kiblat (Ka'bah).
+   - Wudhu wajib sebelum shalat.
+   - Posisi: Qiyam, Ruku', Sujud, Duduk.
+   - Shalat Jumat: mengganti Dhuhur, ada Khutbah, berjamaah.
+
+3. ZAKAT (الزكاة):
+   - 2,5% dari harta di atas Nisab per tahun.
+   - 8 golongan penerima (QS At-Taubah 9:60): fakir, miskin, amil, mualaf, budak, gharimin, fi sabilillah, ibnu sabil.
+   - Zakat Fitrah: sebelum shalat Idul Fitri, ~2,5 kg makanan pokok per orang.
+
+4. PUASA (الصوم):
+   - Dari Subuh sampai Maghrib selama Ramadhan.
+   - Sahur dan Iftar. Pengecualian: musafir, sakit, hamil, anak-anak, lansia.
+   - Lailatul Qadar: lebih baik dari 1.000 bulan (QS Al-Qadr 97:3).
+
+5. HAJI (الحج):
+   - Sekali seumur hidup bagi yang mampu. Bulan Dzulhijjah.
+   - Ritual: Ihram, Tawaf (7 putaran Ka'bah), Sa'i (Safa-Marwah), Wukuf di Arafah, melempar Jamarat, Qurban.
+   - Idul Adha: mengenang kesediaan Ibrahim mengorbankan Ismail.
+
+Buat pertanyaan tentang SEMUA lima rukun dengan istilah Arab, detail praktis, dan referensi Al-Quran/Hadis.`,
+    },
   },
   tebakAyat: {
     title: { en: 'Guess the Verse', id: 'Tebak Ayat Al-Quran' }, genre: 'quiz',
@@ -809,6 +1228,7 @@ const form = $('#builder');
 
 let uiLang = 'en';  // interface language
 let L = 'en';       // language used while building the prompt
+let activePresetKey = null; // tracks which preset is active for knowledgeBase injection
 
 /** Pick the current prompt-language version of an { en, id } pair. */
 function T(pair) { return pair[L]; }
@@ -893,11 +1313,12 @@ function readConfig() {
     extra: get('extra'),
     useContext: d.has('useContext'),
     uploadedContext: uploadedContextText,
+    knowledgeBase: activePresetKey && PRESETS[activePresetKey] && PRESETS[activePresetKey].knowledgeBase ? PRESETS[activePresetKey].knowledgeBase[get('promptLang') === 'id' ? 'id' : 'en'] : '',
     features: FEATURES.filter(([id]) => d.has('f_' + id)).map(([id]) => id),
   };
 }
 
-// ---------- Prompt builder (STAR) ----------
+// ---------- Prompt builder ----------
 
 function buildPrompt(cfg) {
   L = cfg.promptLang;
@@ -912,7 +1333,7 @@ function buildPrompt(cfg) {
   const who = T(aud.who);
   const diffName = DIFFICULTY[c.difficulty][L];
 
-  // --- SITUATION ---
+  // --- CONTEXT ---
   const titleText = c.title ? `"${c.title}"` : T({ en: 'a catchy title you invent', id: 'judul menarik yang kamu buat sendiri' });
   const situation = [
     T({
@@ -939,7 +1360,7 @@ function buildPrompt(cfg) {
     ].filter(Boolean)),
   ].filter((line, i, a) => !(line === '' && a[i - 1] === '')).join('\n');
 
-  // --- TASK ---
+  // --- OBJECTIVE ---
   const deliverable = single
     ? T({
       en: 'one complete, self-contained index.html file that contains all the HTML, CSS (in a <style> tag) and JavaScript (in a <script> tag)',
@@ -956,12 +1377,12 @@ function buildPrompt(cfg) {
     }),
     T({ en: `Build the game with ${T(g.tech)}.`, id: `Bangun game ini dengan ${T(g.tech)}.` }),
     T({
-      en: 'The game must be finished and working, not a prototype: no placeholders, no "TODO" comments and no "add your content here" parts.',
-      id: 'Game harus selesai dan berfungsi, bukan prototipe: tanpa placeholder, tanpa komentar "TODO", dan tanpa bagian "isi kontenmu di sini".',
+      en: 'The game must be finished and working, not a prototype: no placeholders, no "TODO" comments, no "add your content here" parts, and no empty arrays or data structures. ALL game content (questions, stories, cards, levels, word lists) must be fully written with real, accurate, educational content. A game with empty content is a failed game.',
+      id: 'Game harus selesai dan berfungsi, bukan prototipe: tanpa placeholder, tanpa komentar "TODO", tanpa bagian "isi kontenmu di sini", dan tanpa array atau struktur data yang kosong. SEMUA konten game (pertanyaan, cerita, kartu, level, daftar kata) harus ditulis lengkap dengan konten nyata, akurat, dan edukatif. Game dengan konten kosong adalah game yang gagal.',
     }),
   ].join('\n');
 
-  // --- ACTION ---
+  // --- INSTRUCTIONS ---
   const screens = [
     T({ en: 'Start screen with the game title, a short tagline and a Play button', id: 'Layar awal dengan judul game, slogan singkat, dan tombol Main' }),
     has('tutorial') && T({ en: '"How to Play" screen', id: 'layar "Cara Bermain"' }),
@@ -1039,12 +1460,13 @@ function buildPrompt(cfg) {
     }),
     T({ en: 'Code quality.', id: 'Kualitas kode.' }) + '\n' + sub(codeRules),
     c.extra ? T({ en: 'Extra requirements. ', id: 'Permintaan tambahan. ' }) + c.extra : '',
-    (c.useContext && c.uploadedContext) ? T({ en: 'Reference material (from uploaded documents). Use the following content as the knowledge base for generating questions, quiz items, game content, or learning material:\n\n', id: 'Materi referensi (dari dokumen yang diunggah). Gunakan konten berikut sebagai basis pengetahuan untuk membuat pertanyaan, item kuis, konten game, atau materi pembelajaran:\n\n' }) + '```\n' + c.uploadedContext.slice(0, 12000) + '\n```' : '',
+    c.knowledgeBase ? T({ en: 'Required knowledge content for this game. You MUST use the following factual information to generate ALL game content (questions, stories, scenes, cards, etc.). Do NOT leave the game empty or use placeholder content:\n\n', id: 'Konten pengetahuan wajib untuk game ini. Kamu HARUS menggunakan informasi faktual berikut untuk membuat SEMUA konten game (pertanyaan, cerita, adegan, kartu, dll.). JANGAN biarkan game kosong atau gunakan konten placeholder:\n\n' }) + '```\n' + c.knowledgeBase + '\n```' : '',
+    (c.useContext && c.uploadedContext) ? T({ en: 'Additional reference material (from uploaded documents). Use the following content as supplementary knowledge for generating game content:\n\n', id: 'Materi referensi tambahan (dari dokumen yang diunggah). Gunakan konten berikut sebagai pengetahuan tambahan untuk membuat konten game:\n\n' }) + '```\n' + c.uploadedContext.slice(0, 12000) + '\n```' : '',
   ].filter(Boolean);
 
   const action = T({ en: 'Follow these steps:', id: 'Ikuti langkah-langkah berikut:' }) + '\n' + numbered(actionSteps);
 
-  // --- RESULT ---
+  // --- EXPECTED OUTPUT ---
   const criteria = [
     T({
       en: 'The game loads straight away in the Gemini Canvas preview and can be played from the start screen to the end without errors.',
@@ -1095,18 +1517,18 @@ function buildPrompt(cfg) {
 
   return [
     T({ en: '# Game build brief: ', id: '# Brief pembuatan game: ' }) + (c.title || T({ en: `${genreName} game`, id: `game ${genreName}` })),
-    T({ en: 'Prompt framework: STAR (Situation, Task, Action, Result)', id: 'Kerangka prompt: STAR (Situation/Situasi, Task/Tugas, Action/Aksi, Result/Hasil)' }),
     '',
-    T({ en: '## S: SITUATION', id: '## S: SITUASI' }),
+    '',
+    T({ en: '## CONTEXT', id: '## KONTEKS' }),
     situation,
     '',
-    T({ en: '## T: TASK', id: '## T: TUGAS' }),
+    T({ en: '## OBJECTIVE', id: '## TUJUAN' }),
     task,
     '',
-    T({ en: '## A: ACTION', id: '## A: AKSI' }),
+    T({ en: '## INSTRUCTIONS', id: '## INSTRUKSI' }),
     action,
     '',
-    T({ en: '## R: RESULT', id: '## R: HASIL' }),
+    T({ en: '## EXPECTED OUTPUT', id: '## HASIL YANG DIHARAPKAN' }),
     result,
   ].join('\n');
 }
@@ -1117,10 +1539,10 @@ let currentPrompt = '';
 
 function highlight(text) {
   return escapeHtml(text)
-    .replace(/^## S: .*$/m, (m) => `<span class="h-s">${m}</span>`)
-    .replace(/^## T: .*$/m, (m) => `<span class="h-t">${m}</span>`)
-    .replace(/^## A: .*$/m, (m) => `<span class="h-a">${m}</span>`)
-    .replace(/^## R: .*$/m, (m) => `<span class="h-r">${m}</span>`)
+    .replace(/^## CONTEXT$|^## KONTEKS$/m, (m) => `<span class="h-s">${m}</span>`)
+    .replace(/^## OBJECTIVE$|^## TUJUAN$/m, (m) => `<span class="h-t">${m}</span>`)
+    .replace(/^## INSTRUCTIONS$|^## INSTRUKSI$/m, (m) => `<span class="h-a">${m}</span>`)
+    .replace(/^## EXPECTED OUTPUT$|^## HASIL YANG DIHARAPKAN$/m, (m) => `<span class="h-r">${m}</span>`)
     .replace(/^# .*$/m, (m) => `<span class="h-title">${m}</span>`);
 }
 
@@ -1153,12 +1575,13 @@ function setField(name, value) {
   }
 }
 
-function applyPreset(p) {
+function applyPreset(p, presetKey) {
   const promptLang = readConfig().promptLang;
   form.reset();
+  activePresetKey = presetKey || null;
   setField('promptLang', promptLang);
   for (const [k, v] of Object.entries(p)) {
-    if (k === 'features') continue;
+    if (k === 'features' || k === 'knowledgeBase') continue;
     setField(k, v && typeof v === 'object' ? v[uiLang] : v);
   }
   for (const [id] of FEATURES) setField('f_' + id, p.features.includes(id));
@@ -1230,7 +1653,7 @@ function download() {
   const blob = new Blob([currentPrompt], { type: 'text/plain;charset=utf-8' });
   const a = document.createElement('a');
   a.href = URL.createObjectURL(blob);
-  a.download = `${name}-star-prompt-${c.promptLang}.txt`;
+  a.download = `${name}-ai-prompt-${c.promptLang}.txt`;
   a.click();
   setTimeout(() => URL.revokeObjectURL(a.href), 1000);
 }
@@ -1377,8 +1800,9 @@ document.querySelectorAll('[data-ui-lang]').forEach((b) =>
 );
 document.querySelectorAll('[data-preset]').forEach((b) =>
   b.addEventListener('click', () => {
-    const p = PRESETS[b.dataset.preset];
-    applyPreset(p);
+    const key = b.dataset.preset;
+    const p = PRESETS[key];
+    applyPreset(p, key);
     toast(UI[uiLang].toastPreset(p.title[uiLang]));
   })
 );
