@@ -470,44 +470,44 @@ const GENRES = {
 };
 
 const AUDIENCES = {
-  kids: {
-    label: { en: 'Kids (6–9 years)', id: 'Anak-anak (6–9 tahun)' },
-    who: { en: 'children aged 6–9', id: 'anak-anak usia 6–9 tahun' },
+  littleLearners: {
+    label: { en: 'Little Learners (4–6 yrs)', id: 'Usia Dini (4–6 thn)' },
+    who: { en: 'young children aged 4–6 (kindergarten / pre-school)', id: 'anak usia dini 4–6 tahun (TK / PAUD)' },
     ux: {
-      en: 'Use very large buttons, few words per screen, simple vocabulary, generous time limits, lots of positive encouragement, and nothing scary or violent.',
-      id: 'Gunakan tombol yang sangat besar, sedikit kata per layar, kosakata sederhana, batas waktu yang longgar, banyak pujian positif, dan tanpa unsur menakutkan atau kekerasan.',
+      en: 'Use extra-large, colourful buttons (min 64 px), very few words per screen (prefer pictures and icons), no timer pressure, auto-play voice for every Arabic text, very slow speech rate (0.6), cheerful animations after every tap, lots of "MasyaAllah!" and star rewards, sessions under 3 minutes, and absolutely nothing scary.',
+      id: 'Gunakan tombol ekstra besar dan berwarna (min 64 px), sangat sedikit teks per layar (utamakan gambar dan ikon), tanpa tekanan waktu, suara otomatis untuk setiap teks Arab, kecepatan bicara sangat lambat (0.6), animasi ceria setiap ketukan, banyak hadiah "MasyaAllah!" dan bintang, sesi di bawah 3 menit, dan sama sekali tanpa unsur menakutkan.',
     },
   },
-  preteens: {
-    label: { en: 'Pre-teens (10–13 years)', id: 'Praremaja (10–13 tahun)' },
-    who: { en: 'pre-teens aged 10–13', id: 'praremaja usia 10–13 tahun' },
+  elementary: {
+    label: { en: 'Elementary (7–10 yrs)', id: 'SD (7–10 thn)' },
+    who: { en: 'children aged 7–10 (elementary / primary school)', id: 'anak usia 7–10 tahun (SD / MI)' },
     ux: {
-      en: 'Keep instructions short and visual, use encouraging feedback, and make the difficulty curve gentle but rewarding.',
-      id: 'Buat instruksi singkat dan visual, beri umpan balik yang menyemangati, dan buat kenaikan tingkat kesulitan yang landai tapi memuaskan.',
+      en: 'Use large buttons (min 48 px), simple vocabulary, generous time limits, illustrated instructions, encouraging feedback ("Alhamdulillah, great job!"), a gentle difficulty curve, and light background music that starts muted. Arabic speech rate 0.8.',
+      id: 'Gunakan tombol besar (min 48 px), kosakata sederhana, batas waktu yang longgar, instruksi bergambar, umpan balik yang menyemangati ("Alhamdulillah, hebat!"), kenaikan kesulitan yang landai, dan musik latar ringan yang mulai dalam keadaan mati. Kecepatan bicara Arab 0.8.',
     },
   },
-  teens: {
-    label: { en: 'Teens (14–17 years)', id: 'Remaja (14–17 tahun)' },
-    who: { en: 'teenagers aged 14–17', id: 'remaja usia 14–17 tahun' },
+  middleSchool: {
+    label: { en: 'Middle School (11–14 yrs)', id: 'SMP (11–14 thn)' },
+    who: { en: 'pre-teens and young teens aged 11–14 (middle school)', id: 'praremaja usia 11–14 tahun (SMP / MTs)' },
     ux: {
-      en: 'Use a modern, stylish look, a real challenge, and rewards that are worth bragging about.',
-      id: 'Gunakan tampilan modern yang keren, tantangan yang sungguhan, dan hadiah yang layak dipamerkan.',
+      en: 'Keep instructions short and visual, add moderate challenge with timers and scoring, use encouraging but not childish feedback, include leaderboard and achievements, and allow deeper content (longer verses, historical context). Arabic speech rate 0.9.',
+      id: 'Buat instruksi singkat dan visual, tambahkan tantangan moderat dengan timer dan skor, gunakan umpan balik yang menyemangati tapi tidak kekanak-kanakan, sertakan papan peringkat dan pencapaian, dan izinkan konten yang lebih mendalam (ayat lebih panjang, konteks sejarah). Kecepatan bicara Arab 0.9.',
     },
   },
-  adults: {
-    label: { en: 'Adults', id: 'Dewasa' },
-    who: { en: 'adults', id: 'orang dewasa' },
+  teen: {
+    label: { en: 'Teen (15–17 yrs)', id: 'Remaja (15–17 thn)' },
+    who: { en: 'teenagers aged 15–17', id: 'remaja usia 15–17 tahun' },
     ux: {
-      en: "Keep the interface clean and efficient, respect the player's time, and let them skip tutorials.",
-      id: 'Buat antarmuka yang bersih dan efisien, hargai waktu pemain, dan izinkan mereka melewati tutorial.',
+      en: 'Use a modern, stylish interface with real challenge, tighter time limits, harder questions, achievement badges worth showing off, and a clean aesthetic. Content can include advanced topics (tafsir references, detailed fiqh). Arabic speech at normal rate (1.0).',
+      id: 'Gunakan antarmuka modern dan gaya dengan tantangan nyata, batas waktu lebih ketat, pertanyaan lebih sulit, lencana pencapaian yang layak dipamerkan, dan estetika yang bersih. Konten boleh mencakup topik lanjutan (rujukan tafsir, fiqih detail). Kecepatan bicara Arab normal (1.0).',
     },
   },
-  all: {
-    label: { en: 'All ages', id: 'Semua umur' },
-    who: { en: 'players of all ages', id: 'pemain segala usia' },
+  family: {
+    label: { en: 'Family / All Ages', id: 'Keluarga / Semua Umur' },
+    who: { en: 'Muslim families of all ages playing together', id: 'keluarga Muslim segala usia bermain bersama' },
     ux: {
-      en: 'Make it easy to pick up, with clear instructions and a difficulty that can be adjusted.',
-      id: 'Buat mudah dimainkan siapa saja, dengan instruksi yang jelas dan tingkat kesulitan yang bisa diatur.',
+      en: 'Make it easy to pick up for any age, with clear instructions, adjustable difficulty (easy for kids, challenging for adults), a language toggle, and a visible mute button for music. Arabic speech rate 0.8 by default with a speed control.',
+      id: 'Buat mudah dimainkan untuk segala usia, dengan instruksi yang jelas, kesulitan yang bisa diatur (mudah untuk anak, menantang untuk dewasa), tombol ganti bahasa, dan tombol nyala/mati musik yang terlihat jelas. Kecepatan bicara Arab 0.8 secara bawaan dengan kontrol kecepatan.',
     },
   },
 };
@@ -602,7 +602,7 @@ const MOODS = {
 };
 
 const SELECT_DATA = { AUDIENCES, PURPOSES, SESSIONS, STYLES, PALETTES, GAME_LANGS, MOODS };
-const SELECT_DEFAULTS = { audience: 'all', purpose: 'fun', session: '5', style: 'flat', palette: 'auto', lang: 'en', mood: 'cheerful' };
+const SELECT_DEFAULTS = { audience: 'family', purpose: 'fun', session: '5', style: 'flat', palette: 'auto', lang: 'en', mood: 'cheerful' };
 
 const DIFFICULTY = { easy: { en: 'Easy', id: 'Mudah' }, normal: { en: 'Normal', id: 'Normal' }, hard: { en: 'Hard', id: 'Sulit' } };
 
@@ -647,9 +647,9 @@ const FEATURES = [
     en: 'Sound effects generated with the Web Audio API (no audio files): click, success, fail, level up and game over. Include a mute button, and create the AudioContext only after the first user interaction.',
     id: 'Efek suara yang dibuat dengan Web Audio API (tanpa file audio): klik, berhasil, gagal, naik level, dan game over. Sediakan tombol bisu, dan buat AudioContext hanya setelah interaksi pertama pengguna.',
   })],
-  ['music', { en: 'Background music', id: 'Musik latar' }, false, () => T({
-    en: 'A simple, loopable background melody generated with the Web Audio API, with its own on/off toggle and a low default volume.',
-    id: 'Melodi latar sederhana yang berulang, dibuat dengan Web Audio API, dengan tombol nyala/mati sendiri dan volume awal yang pelan.',
+  ['music', { en: 'Background music (off by default)', id: 'Musik latar (mati secara bawaan)' }, false, () => T({
+    en: 'A simple, loopable background melody generated with the Web Audio API. IMPORTANT: music must start OFF (muted) by default — never auto-play. Show a clearly visible 🔊/🔇 music toggle button in the HUD or settings so the player can turn it on if they want, or off if it is distracting. Keep the volume low when enabled.',
+    id: 'Melodi latar sederhana yang berulang, dibuat dengan Web Audio API. PENTING: musik harus MATI secara bawaan — jangan pernah auto-play. Tampilkan tombol toggle musik 🔊/🔇 yang jelas terlihat di HUD atau pengaturan agar pemain bisa menyalakan jika mau, atau mematikan jika mengganggu. Jaga volume tetap pelan saat diaktifkan.',
   })],
   ['juice', { en: 'Animations & particles', id: 'Animasi & partikel' }, true, () => T({
     en: 'Lively feedback: smooth screen transitions, particle bursts on success, a small screen shake on mistakes and button hover/press animations.',
@@ -695,7 +695,7 @@ const PRESETS = {
     title: { en: 'Companions of the Prophet Challenge', id: 'Tantangan Sahabat Rasul' }, genre: 'quiz',
     theme: { en: 'the Companions of the Prophet Muhammad ﷺ — their names, stories, and contributions to Islam', id: 'sahabat Nabi Muhammad ﷺ — nama, kisah, dan kontribusi mereka terhadap Islam' },
     concept: { en: 'Answer questions about the Companions to build a golden mosque. Each correct answer adds a pillar. Wrong answers crack a wall. Learn about Abu Bakr, Umar, Uthman, Ali, Khadijah, Bilal, and more.', id: 'Jawab pertanyaan tentang Sahabat untuk membangun masjid emas. Setiap jawaban benar menambah pilar. Jawaban salah meretakkan dinding. Pelajari Abu Bakar, Umar, Utsman, Ali, Khadijah, Bilal, dan lainnya.' },
-    audience: 'kids', purpose: 'education',
+    audience: 'elementary', purpose: 'education',
     objective: { en: 'Students can identify 10+ Companions of the Prophet and describe their key roles in early Islamic history', id: 'Siswa dapat mengenal 10+ Sahabat Rasul dan menjelaskan peran utama mereka dalam sejarah awal Islam' },
     levels: 3, lives: 3, session: '5', difficulty: 'easy', style: 'cartoon', palette: 'ocean', lang: 'bi', mood: 'cheerful',
     features: ['score', 'highscore', 'timer', 'lives', 'levels', 'difficultySelect', 'pause', 'tutorial', 'sfx', 'juice', 'avatar', 'achievements', 'mobile', 'a11y'],
@@ -704,7 +704,7 @@ const PRESETS = {
     title: { en: 'Arabic Word Explorer', id: 'Penjelajah Kata Arab' }, genre: 'quiz',
     theme: { en: 'Arabic vocabulary — everyday words, Quranic terms, greetings, numbers, colors, body parts, and family words with Arabic script (حروف عربية)', id: 'kosa kata bahasa Arab — kata sehari-hari, istilah Al-Quran, sapaan, angka, warna, anggota tubuh, dan kata keluarga dengan tulisan Arab (حروف عربية)' },
     concept: { en: 'See an Arabic word in its script, hear it read aloud, then pick the correct meaning. Earn stars to unlock new word categories. Includes Arabic writing display for every word.', id: 'Lihat kata Arab dalam tulisan aslinya, dengarkan pengucapannya, lalu pilih arti yang benar. Kumpulkan bintang untuk membuka kategori kata baru. Menampilkan tulisan Arab untuk setiap kata.' },
-    audience: 'preteens', purpose: 'education',
+    audience: 'elementary', purpose: 'education',
     objective: { en: 'Learners can recognize and translate 50+ basic Arabic words including their written Arabic form', id: 'Siswa dapat mengenali dan menerjemahkan 50+ kata dasar bahasa Arab termasuk bentuk tulisan Arabnya' },
     levels: 5, lives: 3, session: '5', difficulty: 'easy', style: 'flat', palette: 'sunset', lang: 'ar', mood: 'calm',
     features: ['score', 'highscore', 'timer', 'lives', 'levels', 'difficultySelect', 'pause', 'tutorial', 'sfx', 'juice', 'achievements', 'hints', 'arabicTTS', 'mobile', 'a11y'],
@@ -713,7 +713,7 @@ const PRESETS = {
     title: { en: 'Muslim Heroes Journey', id: 'Perjalanan Pahlawan Muslim' }, genre: 'adventure',
     theme: { en: 'exploring the lives of great Muslim heroes from the era of Rasulullah ﷺ — Khalid ibn al-Walid, Salahuddin, Hamzah ibn Abdul-Muttalib, Musab ibn Umair, and others', id: 'menjelajahi kehidupan pahlawan Muslim hebat dari era Rasulullah ﷺ — Khalid bin Walid, Salahuddin, Hamzah bin Abdul Muthalib, Mush\'ab bin Umair, dan lainnya' },
     concept: { en: 'Travel through historical Islamic locations, meet Muslim heroes, answer questions about their stories, and collect wisdom scrolls. Each hero teaches a virtue: bravery, justice, generosity, or knowledge.', id: 'Berpetualang ke lokasi bersejarah Islam, bertemu pahlawan Muslim, jawab pertanyaan tentang kisah mereka, dan kumpulkan gulungan hikmah. Setiap pahlawan mengajarkan satu kebajikan: keberanian, keadilan, kedermawanan, atau ilmu.' },
-    audience: 'preteens', purpose: 'education',
+    audience: 'middleSchool', purpose: 'education',
     objective: { en: 'Students can narrate the key stories of 8+ Muslim heroes and the virtues they represent', id: 'Siswa dapat menceritakan kisah utama 8+ pahlawan Muslim dan kebajikan yang mereka wakili' },
     levels: 5, lives: 3, session: '10', difficulty: 'normal', style: 'fantasy', palette: 'earth', lang: 'bi', mood: 'mysterious',
     features: ['score', 'levels', 'pause', 'tutorial', 'sfx', 'music', 'juice', 'achievements', 'hints', 'settings', 'mobile', 'a11y'],
@@ -722,7 +722,7 @@ const PRESETS = {
     title: { en: 'Arabic Alphabet Match', id: 'Cocokkan Hijaiyah' }, genre: 'memory',
     theme: { en: 'the Arabic alphabet (Huruf Al-Hijaiyah) — match each letter with its name and sound: Alif (ا), Ba (ب), Ta (ت), Tha (ث), Jim (ج), and all 28 letters', id: 'huruf hijaiyah — cocokkan setiap huruf dengan nama dan bunyinya: alif (ا), ba (ب), ta (ت), tsa (ث), jim (ج), dan semua 28 huruf' },
     concept: { en: 'Flip cards to match Arabic letters with their romanized names. The cards show beautiful Arabic calligraphy. Progress from basic letters to letters with vowel marks (Fathah, Kasrah, Dhammah).', id: 'Balik kartu untuk mencocokkan huruf Arab dengan nama latinnya. Kartu menampilkan kaligrafi Arab yang indah. Berlanjut dari huruf dasar ke huruf dengan harakat (fathah, kasrah, dhammah).' },
-    audience: 'kids', purpose: 'education',
+    audience: 'littleLearners', purpose: 'education',
     objective: { en: 'Learners can identify all 28 Arabic alphabet letters and their basic sounds', id: 'Siswa dapat mengenal semua 28 huruf Hijaiyah dan bunyi dasarnya' },
     levels: 3, lives: 3, session: '5', difficulty: 'easy', style: 'flat', palette: 'candy', lang: 'ar', mood: 'cheerful',
     features: ['score', 'highscore', 'timer', 'levels', 'pause', 'tutorial', 'sfx', 'juice', 'achievements', 'arabicTTS', 'mobile', 'a11y'],
@@ -731,7 +731,7 @@ const PRESETS = {
     title: { en: 'Six Articles of Faith', id: 'Tantangan Rukun Iman' }, genre: 'quiz',
     theme: { en: 'the Six Articles of Faith (Arkan al-Iman) — belief in Allah, the Angels, the Holy Books, the Prophets and Messengers, the Day of Judgment, and Divine Predestination (Qadar)', id: 'Rukun Iman yang 6 — iman kepada Allah, Malaikat, Kitab-kitab, Rasul-rasul, Hari Akhir, dan Qada & Qadar' },
     concept: { en: 'Answer questions about each article of faith. Each correct answer lights up a star on a crescent. Complete all 6 articles to unlock a golden crescent and moon. Questions range from naming the articles to understanding their meaning and evidence from the Quran and Hadith.', id: 'Jawab pertanyaan tentang setiap rukun iman. Setiap jawaban benar menyalakan bintang di bulan sabit. Selesaikan 6 rukun untuk membuka bulan sabit emas. Pertanyaan mulai dari menyebut rukun hingga memahami makna dan dalil dari Al-Quran dan Hadis.' },
-    audience: 'kids', purpose: 'education',
+    audience: 'elementary', purpose: 'education',
     objective: { en: 'Students can name and explain all Six Articles of Faith with evidence from the Quran and Hadith', id: 'Siswa dapat menyebutkan dan menjelaskan 6 Rukun Iman beserta dalil dari Al-Quran dan Hadis' },
     levels: 3, lives: 3, session: '5', difficulty: 'easy', style: 'cartoon', palette: 'ocean', lang: 'bi', mood: 'cheerful',
     features: ['score', 'highscore', 'timer', 'lives', 'levels', 'difficultySelect', 'pause', 'tutorial', 'sfx', 'juice', 'achievements', 'hints', 'arabicTTS', 'mobile', 'a11y'],
@@ -740,7 +740,7 @@ const PRESETS = {
     title: { en: 'The Five Pillars of Islam', id: 'Lima Rukun Islam' }, genre: 'quiz',
     theme: { en: 'the Five Pillars of Islam (Arkan al-Islam) — the Declaration of Faith (Shahada), Prayer (Salah), Almsgiving (Zakat), Fasting during Ramadan (Sawm), and Pilgrimage to Makkah (Hajj)', id: 'Rukun Islam yang 5 — Syahadat, Shalat, Zakat, Puasa Ramadhan, dan Haji ke Makkah' },
     concept: { en: 'Build a beautiful mosque brick by brick! Each correct answer about the Five Pillars adds a brick. Learn the wording of the Shahada, the 5 daily prayers and their times, who receives Zakat, Ramadan fasting rules, and Hajj rituals. Includes Arabic text for key terms and supplications.', id: 'Bangun masjid yang indah bata demi bata! Setiap jawaban benar tentang 5 rukun menambah bata. Pelajari lafaz Syahadat, 5 waktu shalat, siapa penerima Zakat, aturan puasa Ramadhan, dan ritual Haji. Menampilkan teks Arab untuk istilah kunci dan doa.' },
-    audience: 'kids', purpose: 'education',
+    audience: 'elementary', purpose: 'education',
     objective: { en: 'Students can explain the Five Pillars of Islam, their requirements, and practical application in daily Muslim life', id: 'Siswa dapat menjelaskan 5 Rukun Islam, syarat-syaratnya, dan penerapan praktis dalam kehidupan Muslim sehari-hari' },
     levels: 5, lives: 3, session: '5', difficulty: 'easy', style: 'flat', palette: 'sunset', lang: 'bi', mood: 'cheerful',
     features: ['score', 'highscore', 'timer', 'lives', 'levels', 'difficultySelect', 'pause', 'tutorial', 'sfx', 'juice', 'avatar', 'achievements', 'hints', 'arabicTTS', 'mobile', 'a11y'],
@@ -749,7 +749,7 @@ const PRESETS = {
     title: { en: 'Guess the Verse', id: 'Tebak Ayat Al-Quran' }, genre: 'quiz',
     theme: { en: 'Quranic verses (ayat) — guess which Surah an ayah belongs to, complete missing words in a verse, or match Arabic text with its translation. Features verses from Al-Fatihah, Al-Baqarah, Al-Ikhlas, An-Nas, Al-Falaq, Yasin, Ar-Rahman, and other popular Surahs.', id: 'ayat-ayat Al-Quran — tebak dari Surah mana sebuah ayat, lengkapi kata yang hilang, atau cocokkan teks Arab dengan terjemahannya. Menampilkan ayat dari Al-Fatihah, Al-Baqarah, Al-Ikhlas, An-Nas, Al-Falaq, Yasin, Ar-Rahman, dan Surah populer lainnya.' },
     concept: { en: 'See a Quranic verse displayed in beautiful Arabic calligraphy. Choose the correct Surah name, or fill in the missing word. Harder levels show only the translation and you must identify the Surah. Earn crescent moons for streaks. Learn the meaning and context (asbabun nuzul) of each verse.', id: 'Lihat ayat Al-Quran ditampilkan dalam kaligrafi Arab yang indah. Pilih nama Surah yang benar, atau isi kata yang hilang. Level lebih sulit hanya menampilkan terjemahan dan kamu harus menebak Surahnya. Kumpulkan bulan sabit untuk streak. Pelajari makna dan konteks (asbabun nuzul) setiap ayat.' },
-    audience: 'preteens', purpose: 'education',
+    audience: 'middleSchool', purpose: 'education',
     objective: { en: 'Students can identify 30+ Quranic verses, name their Surah, and explain their meaning', id: 'Siswa dapat mengenali 30+ ayat Al-Quran, menyebut nama Surahnya, dan menjelaskan maknanya' },
     levels: 5, lives: 3, session: '10', difficulty: 'normal', style: 'minimal', palette: 'earth', lang: 'ar', mood: 'calm',
     features: ['score', 'highscore', 'timer', 'lives', 'levels', 'difficultySelect', 'pause', 'tutorial', 'sfx', 'juice', 'achievements', 'hints', 'arabicTTS', 'mobile', 'a11y'],
@@ -758,7 +758,7 @@ const PRESETS = {
     title: { en: 'Quran Knowledge Explorer', id: 'Jelajah Pengetahuan Al-Quran' }, genre: 'adventure',
     theme: { en: 'exploring the Quran — learn about the 114 Surahs, their themes, Makki vs Madani classification, stories of the Prophets mentioned in the Quran (Nuh, Ibrahim, Musa, Isa, Muhammad ﷺ), and key Islamic values: justice (العدل), mercy (الرحمة), patience (الصبر), gratitude (الشكر), honesty (الصدق)', id: 'menjelajahi Al-Quran — pelajari 114 Surah, tema-temanya, klasifikasi Makkiyah vs Madaniyah, kisah para Nabi dalam Al-Quran (Nuh, Ibrahim, Musa, Isa, Muhammad ﷺ), dan nilai-nilai Islam utama: keadilan (العدل), kasih sayang (الرحمة), kesabaran (الصبر), rasa syukur (الشكر), kejujuran (الصدق)' },
     concept: { en: 'Journey through a beautiful library of the Quran. Each room represents a Juz or theme. Solve puzzles about Surah names, prophets\' stories, and Islamic values to unlock the next room. Collect wisdom gems that reveal key verses with Arabic text and translation.', id: 'Berpetualang melalui perpustakaan Al-Quran yang indah. Setiap ruangan mewakili satu Juz atau tema. Pecahkan teka-teki tentang nama Surah, kisah para Nabi, dan nilai-nilai Islam untuk membuka ruangan berikutnya. Kumpulkan permata hikmah yang menampilkan ayat-ayat penting beserta teks Arab dan terjemahannya.' },
-    audience: 'preteens', purpose: 'education',
+    audience: 'middleSchool', purpose: 'education',
     objective: { en: 'Students gain comprehensive knowledge of Quran structure, prophet stories, and core Islamic values with supporting verses', id: 'Siswa memperoleh pengetahuan komprehensif tentang struktur Al-Quran, kisah para Nabi, dan nilai-nilai Islam utama beserta ayat pendukungnya' },
     levels: 5, lives: 3, session: '10', difficulty: 'normal', style: 'fantasy', palette: 'earth', lang: 'bi', mood: 'mysterious',
     features: ['score', 'levels', 'pause', 'tutorial', 'sfx', 'music', 'juice', 'achievements', 'hints', 'arabicTTS', 'settings', 'mobile', 'a11y'],
@@ -767,7 +767,7 @@ const PRESETS = {
     title: { en: 'Prayer Recitation Master', id: 'Hafalan Bacaan Sholat' }, genre: 'quiz',
     theme: { en: 'memorizing the recitations of Salah (Islamic prayer) — the Intention (Niyyah), Opening Takbir (Allahu Akbar), Al-Fatihah, Bowing (Ruku\') supplication (سبحان ربي العظيم), Rising (I\'tidal) supplication (سمع الله لمن حمده), Prostration (Sujud) supplication (سبحان ربي الأعلى), Sitting between two prostrations, Tashahhud, Salawat upon the Prophet, and the closing Salam', id: 'hafalan bacaan sholat — Niat, Takbiratul Ihram (الله أكبر), Al-Fatihah, bacaan Ruku\' (سبحان ربي العظيم), I\'tidal (سمع الله لمن حمده), bacaan Sujud (سبحان ربي الأعلى), duduk antara dua sujud, Tasyahhud/Tahiyyat, Shalawat Ibrahimiyyah, dan Salam' },
     concept: { en: 'Follow along a visual prayer sequence. At each position (standing, bowing, prostrating, sitting), fill in the missing words of the recitation in Arabic. Includes transliteration and meaning. Progress from the short Fajr prayer to longer ones (Dhuhr, Asr, Maghrib, Isha).', id: 'Ikuti urutan sholat secara visual. Di setiap posisi (berdiri, ruku\', sujud, duduk), lengkapi kata yang hilang dari bacaan dalam bahasa Arab. Dilengkapi transliterasi dan arti. Berlanjut dari sholat pendek (Subuh) ke yang lebih panjang (Dhuhur, Ashar, Maghrib, Isya).' },
-    audience: 'kids', purpose: 'education',
+    audience: 'elementary', purpose: 'education',
     objective: { en: 'Students can recite all prayer recitations in correct order with proper Arabic pronunciation', id: 'Siswa dapat membaca semua bacaan sholat dalam urutan yang benar dengan pengucapan Arab yang tepat' },
     levels: 5, lives: 3, session: '5', difficulty: 'easy', style: 'flat', palette: 'ocean', lang: 'ar', mood: 'calm',
     features: ['score', 'highscore', 'lives', 'levels', 'difficultySelect', 'pause', 'tutorial', 'sfx', 'juice', 'achievements', 'hints', 'arabicTTS', 'mobile', 'a11y'],
@@ -776,7 +776,7 @@ const PRESETS = {
     title: { en: 'Daily Supplications Champion', id: 'Juara Doa Harian' }, genre: 'memory',
     theme: { en: 'daily Islamic supplications (du\'a) — supplication before eating (بسم الله), after eating (الحمد لله), entering the mosque, leaving the mosque, before sleeping, waking up, entering the bathroom, traveling, for parents, when it rains, when looking in a mirror, and more — all in Arabic script with English meaning', id: 'doa harian Islam — doa sebelum makan (بسم الله), sesudah makan (الحمد لله), masuk masjid, keluar masjid, sebelum tidur, bangun tidur, masuk kamar mandi, bepergian, untuk orang tua, saat hujan, saat bercermin, dan lainnya — semua dalam bahasa Arab beserta artinya' },
     concept: { en: 'Match each daily activity with its correct supplication. Cards show the activity on one side and the Arabic text on the other. Learn when and why to say each supplication. Progress from simple ones (Bismillah, Alhamdulillah) to longer supplications.', id: 'Cocokkan setiap aktivitas harian dengan doa yang tepat. Kartu menampilkan aktivitas di satu sisi dan teks doa Arab di sisi lain. Pelajari kapan dan mengapa membaca setiap doa. Berlanjut dari yang sederhana (Bismillah, Alhamdulillah) ke doa yang lebih panjang.' },
-    audience: 'kids', purpose: 'education',
+    audience: 'littleLearners', purpose: 'education',
     objective: { en: 'Students can recite 15+ daily supplications in Arabic and know when to use each one', id: 'Siswa dapat membaca 15+ doa harian dalam bahasa Arab dan tahu kapan menggunakan masing-masing' },
     levels: 3, lives: 3, session: '5', difficulty: 'easy', style: 'cartoon', palette: 'candy', lang: 'ar', mood: 'cheerful',
     features: ['score', 'highscore', 'timer', 'levels', 'pause', 'tutorial', 'sfx', 'juice', 'achievements', 'arabicTTS', 'mobile', 'a11y'],
@@ -874,7 +874,7 @@ function readConfig() {
     genre: GENRES[get('genre')] ? get('genre') : 'quiz',
     theme: get('theme'),
     concept: get('concept'),
-    audience: get('audience') || 'all',
+    audience: get('audience') || 'family',
     purpose: get('purpose') || 'fun',
     objective: get('objective'),
     levels: clampInt(get('levels'), 1, 20, 3),
