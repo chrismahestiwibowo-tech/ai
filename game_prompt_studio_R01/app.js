@@ -667,6 +667,10 @@ const FEATURES = [
     en: 'A hint button with a limited number of hints per game, shown in the HUD.',
     id: 'Tombol petunjuk dengan jumlah petunjuk terbatas per permainan, ditampilkan di HUD.',
   })],
+  ['arabicTTS', { en: 'Arabic voice (text-to-speech)', id: 'Suara Arab (text-to-speech)' }, false, () => T({
+    en: 'Arabic text-to-speech using the Web Speech API (speechSynthesis). Add a speaker/sound icon button next to every Arabic text element. When tapped, it reads the Arabic text aloud using the browser\'s Arabic voice (lang "ar-SA" or "ar"). Create the utterance with SpeechSynthesisUtterance, set rate to 0.8 for clarity, and pick the first available Arabic voice. Include a global "Auto-play voice" toggle so learners can hear each word/verse automatically when it appears. Wrap all speechSynthesis calls in try/catch and hide the voice button if the API is unavailable.',
+    id: 'Text-to-speech bahasa Arab menggunakan Web Speech API (speechSynthesis). Tambahkan tombol ikon speaker di samping setiap elemen teks Arab. Saat diketuk, teks Arab dibacakan menggunakan suara Arab browser (lang "ar-SA" atau "ar"). Buat utterance dengan SpeechSynthesisUtterance, atur rate ke 0.8 agar jelas, dan pilih suara Arab pertama yang tersedia. Sertakan toggle global "Putar suara otomatis" agar pelajar bisa mendengar setiap kata/ayat secara otomatis saat muncul. Bungkus semua panggilan speechSynthesis dengan try/catch dan sembunyikan tombol suara jika API tidak tersedia.',
+  })],
   ['leaderboard', { en: 'Local leaderboard', id: 'Papan peringkat lokal' }, false, () => T({
     en: 'A local top-10 leaderboard where the player enters a name, saved in localStorage.',
     id: 'Papan peringkat 10 besar lokal tempat pemain memasukkan nama, disimpan di localStorage.',
@@ -703,7 +707,7 @@ const PRESETS = {
     audience: 'preteens', purpose: 'education',
     objective: { en: 'Learners can recognize and translate 50+ basic Arabic words including their written Arabic form', id: 'Siswa dapat mengenali dan menerjemahkan 50+ kata dasar bahasa Arab termasuk bentuk tulisan Arabnya' },
     levels: 5, lives: 3, session: '5', difficulty: 'easy', style: 'flat', palette: 'sunset', lang: 'ar', mood: 'calm',
-    features: ['score', 'highscore', 'timer', 'lives', 'levels', 'difficultySelect', 'pause', 'tutorial', 'sfx', 'juice', 'achievements', 'hints', 'mobile', 'a11y'],
+    features: ['score', 'highscore', 'timer', 'lives', 'levels', 'difficultySelect', 'pause', 'tutorial', 'sfx', 'juice', 'achievements', 'hints', 'arabicTTS', 'mobile', 'a11y'],
   },
   heroAdventure: {
     title: { en: 'Muslim Heroes Journey', id: 'Perjalanan Pahlawan Muslim' }, genre: 'adventure',
@@ -721,7 +725,7 @@ const PRESETS = {
     audience: 'kids', purpose: 'education',
     objective: { en: 'Learners can identify all 28 Arabic alphabet letters and their basic sounds', id: 'Siswa dapat mengenal semua 28 huruf Hijaiyah dan bunyi dasarnya' },
     levels: 3, lives: 3, session: '5', difficulty: 'easy', style: 'flat', palette: 'candy', lang: 'ar', mood: 'cheerful',
-    features: ['score', 'highscore', 'timer', 'levels', 'pause', 'tutorial', 'sfx', 'juice', 'achievements', 'mobile', 'a11y'],
+    features: ['score', 'highscore', 'timer', 'levels', 'pause', 'tutorial', 'sfx', 'juice', 'achievements', 'arabicTTS', 'mobile', 'a11y'],
   },
   rukunIman: {
     title: { en: 'Six Articles of Faith', id: 'Tantangan Rukun Iman' }, genre: 'quiz',
@@ -730,7 +734,7 @@ const PRESETS = {
     audience: 'kids', purpose: 'education',
     objective: { en: 'Students can name and explain all Six Articles of Faith with evidence from the Quran and Hadith', id: 'Siswa dapat menyebutkan dan menjelaskan 6 Rukun Iman beserta dalil dari Al-Quran dan Hadis' },
     levels: 3, lives: 3, session: '5', difficulty: 'easy', style: 'cartoon', palette: 'ocean', lang: 'bi', mood: 'cheerful',
-    features: ['score', 'highscore', 'timer', 'lives', 'levels', 'difficultySelect', 'pause', 'tutorial', 'sfx', 'juice', 'achievements', 'hints', 'mobile', 'a11y'],
+    features: ['score', 'highscore', 'timer', 'lives', 'levels', 'difficultySelect', 'pause', 'tutorial', 'sfx', 'juice', 'achievements', 'hints', 'arabicTTS', 'mobile', 'a11y'],
   },
   rukunIslam: {
     title: { en: 'The Five Pillars of Islam', id: 'Lima Rukun Islam' }, genre: 'quiz',
@@ -739,7 +743,7 @@ const PRESETS = {
     audience: 'kids', purpose: 'education',
     objective: { en: 'Students can explain the Five Pillars of Islam, their requirements, and practical application in daily Muslim life', id: 'Siswa dapat menjelaskan 5 Rukun Islam, syarat-syaratnya, dan penerapan praktis dalam kehidupan Muslim sehari-hari' },
     levels: 5, lives: 3, session: '5', difficulty: 'easy', style: 'flat', palette: 'sunset', lang: 'bi', mood: 'cheerful',
-    features: ['score', 'highscore', 'timer', 'lives', 'levels', 'difficultySelect', 'pause', 'tutorial', 'sfx', 'juice', 'avatar', 'achievements', 'hints', 'mobile', 'a11y'],
+    features: ['score', 'highscore', 'timer', 'lives', 'levels', 'difficultySelect', 'pause', 'tutorial', 'sfx', 'juice', 'avatar', 'achievements', 'hints', 'arabicTTS', 'mobile', 'a11y'],
   },
   tebakAyat: {
     title: { en: 'Guess the Verse', id: 'Tebak Ayat Al-Quran' }, genre: 'quiz',
@@ -748,7 +752,7 @@ const PRESETS = {
     audience: 'preteens', purpose: 'education',
     objective: { en: 'Students can identify 30+ Quranic verses, name their Surah, and explain their meaning', id: 'Siswa dapat mengenali 30+ ayat Al-Quran, menyebut nama Surahnya, dan menjelaskan maknanya' },
     levels: 5, lives: 3, session: '10', difficulty: 'normal', style: 'minimal', palette: 'earth', lang: 'ar', mood: 'calm',
-    features: ['score', 'highscore', 'timer', 'lives', 'levels', 'difficultySelect', 'pause', 'tutorial', 'sfx', 'juice', 'achievements', 'hints', 'mobile', 'a11y'],
+    features: ['score', 'highscore', 'timer', 'lives', 'levels', 'difficultySelect', 'pause', 'tutorial', 'sfx', 'juice', 'achievements', 'hints', 'arabicTTS', 'mobile', 'a11y'],
   },
   quranExplorer: {
     title: { en: 'Quran Knowledge Explorer', id: 'Jelajah Pengetahuan Al-Quran' }, genre: 'adventure',
@@ -757,7 +761,7 @@ const PRESETS = {
     audience: 'preteens', purpose: 'education',
     objective: { en: 'Students gain comprehensive knowledge of Quran structure, prophet stories, and core Islamic values with supporting verses', id: 'Siswa memperoleh pengetahuan komprehensif tentang struktur Al-Quran, kisah para Nabi, dan nilai-nilai Islam utama beserta ayat pendukungnya' },
     levels: 5, lives: 3, session: '10', difficulty: 'normal', style: 'fantasy', palette: 'earth', lang: 'bi', mood: 'mysterious',
-    features: ['score', 'levels', 'pause', 'tutorial', 'sfx', 'music', 'juice', 'achievements', 'hints', 'settings', 'mobile', 'a11y'],
+    features: ['score', 'levels', 'pause', 'tutorial', 'sfx', 'music', 'juice', 'achievements', 'hints', 'arabicTTS', 'settings', 'mobile', 'a11y'],
   },
   bacaanSholat: {
     title: { en: 'Prayer Recitation Master', id: 'Hafalan Bacaan Sholat' }, genre: 'quiz',
@@ -766,7 +770,7 @@ const PRESETS = {
     audience: 'kids', purpose: 'education',
     objective: { en: 'Students can recite all prayer recitations in correct order with proper Arabic pronunciation', id: 'Siswa dapat membaca semua bacaan sholat dalam urutan yang benar dengan pengucapan Arab yang tepat' },
     levels: 5, lives: 3, session: '5', difficulty: 'easy', style: 'flat', palette: 'ocean', lang: 'ar', mood: 'calm',
-    features: ['score', 'highscore', 'lives', 'levels', 'difficultySelect', 'pause', 'tutorial', 'sfx', 'juice', 'achievements', 'hints', 'mobile', 'a11y'],
+    features: ['score', 'highscore', 'lives', 'levels', 'difficultySelect', 'pause', 'tutorial', 'sfx', 'juice', 'achievements', 'hints', 'arabicTTS', 'mobile', 'a11y'],
   },
   doaHarian: {
     title: { en: 'Daily Supplications Champion', id: 'Juara Doa Harian' }, genre: 'memory',
@@ -775,7 +779,7 @@ const PRESETS = {
     audience: 'kids', purpose: 'education',
     objective: { en: 'Students can recite 15+ daily supplications in Arabic and know when to use each one', id: 'Siswa dapat membaca 15+ doa harian dalam bahasa Arab dan tahu kapan menggunakan masing-masing' },
     levels: 3, lives: 3, session: '5', difficulty: 'easy', style: 'cartoon', palette: 'candy', lang: 'ar', mood: 'cheerful',
-    features: ['score', 'highscore', 'timer', 'levels', 'pause', 'tutorial', 'sfx', 'juice', 'achievements', 'mobile', 'a11y'],
+    features: ['score', 'highscore', 'timer', 'levels', 'pause', 'tutorial', 'sfx', 'juice', 'achievements', 'arabicTTS', 'mobile', 'a11y'],
   },
 };
 
