@@ -6,6 +6,10 @@
   <title>Game Prompt Studio</title>
   <meta name="description" content="Generate STAR-framework prompts (English or Bahasa Indonesia) for Gemini Canvas to build your own interactive browser game.">
   <link rel="stylesheet" href="style.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.6.0/mammoth.browser.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 </head>
 <body>
   <header class="site-header">
@@ -62,6 +66,26 @@
         <label id="objectiveWrap" hidden><span data-i18n="fObjective"></span>
           <input type="text" name="objective" data-i18n-ph="phObjective">
         </label>
+        <div class="context-upload">
+          <label class="upload-label">
+            <span data-i18n="fContext"></span> <span class="opt" data-i18n="optional"></span>
+            <div class="drop-zone" id="dropZone">
+              <input type="file" id="fileInput" accept=".pdf,.docx,.doc,.xlsx,.xls,.pptx,.ppt" multiple hidden>
+              <span class="drop-icon" aria-hidden="true">📄</span>
+              <span class="drop-text" data-i18n="dropText"></span>
+              <small class="drop-hint">PDF, DOCX, XLSX, PPTX</small>
+            </div>
+          </label>
+          <div id="fileList" class="file-list" hidden></div>
+          <div id="contextPreview" class="context-preview" hidden>
+            <div class="context-header">
+              <span class="context-badge" data-i18n="contextLoaded"></span>
+              <button type="button" class="btn-small" id="clearContextBtn" data-i18n="contextClear"></button>
+            </div>
+            <pre id="contextText" class="context-text"></pre>
+          </div>
+          <label class="check" id="useContextWrap" hidden><input type="checkbox" name="useContext" checked><span data-i18n="contextUse"></span></label>
+        </div>
       </section>
 
       <!-- 2. Gameplay -->

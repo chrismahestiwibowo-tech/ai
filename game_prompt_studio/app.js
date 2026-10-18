@@ -71,6 +71,13 @@ const UI = {
     toastCopied: 'Prompt copied. Paste it into Gemini Canvas.',
     toastFollow: 'Follow-up prompt copied',
     toastPreset: (t) => `Loaded "${t}"`,
+    fContext: 'Knowledge context',
+    dropText: 'Click or drag files here',
+    contextLoaded: '✅ Context loaded',
+    contextClear: 'Clear',
+    contextUse: 'Include uploaded context in prompt',
+    contextSection: 'Reference material (from uploaded documents)',
+    contextParsing: 'Reading files...',
   },
   id: {
     tagline: 'Rancang game-mu, dapatkan prompt STAR, lalu tempel ke Gemini Canvas.',
@@ -137,6 +144,13 @@ const UI = {
     toastCopied: 'Prompt tersalin. Tempel ke Gemini Canvas.',
     toastFollow: 'Prompt lanjutan tersalin',
     toastPreset: (t) => `"${t}" dimuat`,
+    fContext: 'Konteks pengetahuan',
+    dropText: 'Klik atau seret file ke sini',
+    contextLoaded: '✅ Konteks dimuat',
+    contextClear: 'Hapus',
+    contextUse: 'Sertakan konteks unggahan dalam prompt',
+    contextSection: 'Materi referensi (dari dokumen yang diunggah)',
+    contextParsing: 'Membaca file...',
   },
 };
 
@@ -805,6 +819,8 @@ function readConfig() {
     localhost: d.has('localhost'),
     nextIdeas: d.has('nextIdeas'),
     extra: get('extra'),
+    useContext: d.has('useContext'),
+    uploadedContext: uploadedContextText,
     features: FEATURES.filter(([id]) => d.has('f_' + id)).map(([id]) => id),
   };
 }
@@ -951,6 +967,7 @@ function buildPrompt(cfg) {
     }),
     T({ en: 'Code quality.', id: 'Kualitas kode.' }) + '\n' + sub(codeRules),
     c.extra ? T({ en: 'Extra requirements. ', id: 'Permintaan tambahan. ' }) + c.extra : '',
+    (c.useContext && c.uploadedContext) ? T({ en: 'Reference material (from uploaded documents). Use the following content as the knowledge base for generating questions, quiz items, game content, or learning material:\n\n', id: 'Materi referensi (dari dokumen yang diunggah). Gunakan konten berikut sebagai basis pengetahuan untuk membuat pertanyaan, item kuis, konten game, atau materi pembelajaran:\n\n' }) + '```\n' + c.uploadedContext.slice(0, 12000) + '\n```' : '',
   ].filter(Boolean);
 
   const action = T({ en: 'Follow these steps:', id: 'Ikuti langkah-langkah berikut:' }) + '\n' + numbered(actionSteps);
@@ -1153,6 +1170,124 @@ function switchUiLang(lang) {
   try { localStorage.setItem(UI_LANG_KEY, lang); } catch (_) { /* ignore */ }
   render();
 }
+
+// ---------- Uploaded context (client-side parsing) ----------
+
+let uploadedContextText = '';
+
+async function parsePDF(buf) {
+  const pdf = await pdfjsLib.getDocument({ data: buf }).promise;
+  const pages = [];
+  for (let i = 1; i <= pdf.numPages; i++) {
+    const page = await pdf.getPage(i);
+    const content = await page.getTextContent();
+    pages.push(content.items.map(it => it.str).join(' '));
+  }
+  return pages.join('\n\n');
+}
+
+async function parseDOCX(buf) {
+  const result = await mammoth.extractRawText({ arrayBuffer: buf });
+  return result.value;
+}
+
+async function parseXLSX(buf) {
+  const wb = XLSX.read(buf, { type: 'array' });
+  const parts = [];
+  for (const name of wb.SheetNames) {
+    parts.push('[Sheet: ' + name + ']');
+    const csv = XLSX.utils.sheet_to_csv(wb.Sheets[name]);
+    parts.push(csv);
+  }
+  return parts.join('\n');
+}
+
+async function parsePPTX(buf) {
+  const zip = await JSZip.loadAsync(buf);
+  const slides = [];
+  let i = 1;
+  while (true) {
+    const entry = zip.file('ppt/slides/slide' + i + '.xml');
+    if (!entry) break;
+    const xml = await entry.async('text');
+    const texts = [];
+    xml.replace(/<a:t>([\s\S]*?)<\/a:t>/g, (_, t) => { texts.push(t); });
+    if (texts.length) slides.push('[Slide ' + i + ']\n' + texts.join('\n'));
+    i++;
+  }
+  return slides.join('\n\n');
+}
+
+async function parseFile(file) {
+  const buf = await file.arrayBuffer();
+  const ext = file.name.split('.').pop().toLowerCase();
+  if (ext === 'pdf') return parsePDF(buf);
+  if (ext === 'docx' || ext === 'doc') return parseDOCX(buf);
+  if (ext === 'xlsx' || ext === 'xls') return parseXLSX(buf);
+  if (ext === 'pptx' || ext === 'ppt') return parsePPTX(buf);
+  return '[Unsupported: ' + file.name + ']';
+}
+
+(function initUpload() {
+  const dropZone = $('#dropZone');
+  const fileInput = $('#fileInput');
+  const fileList = $('#fileList');
+  const preview = $('#contextPreview');
+  const textEl = $('#contextText');
+  const clearBtn = $('#clearContextBtn');
+  const useWrap = $('#useContextWrap');
+
+  function showContext(text) {
+    uploadedContextText = text;
+    textEl.textContent = text.length > 3000 ? text.slice(0, 3000) + '\n…' : text;
+    preview.hidden = false;
+    useWrap.hidden = false;
+    render();
+  }
+
+  function clearContext() {
+    uploadedContextText = '';
+    fileInput.value = '';
+    fileList.hidden = true;
+    fileList.innerHTML = '';
+    preview.hidden = true;
+    useWrap.hidden = true;
+    render();
+  }
+
+  async function handleFiles(files) {
+    if (!files.length) return;
+    fileList.hidden = false;
+    fileList.innerHTML = Array.from(files).map(f =>
+      '<span class="file-chip">' + escapeHtml(f.name) + '</span>'
+    ).join('');
+    dropZone.querySelector('.drop-text').textContent = UI[uiLang].contextParsing || '...';
+    try {
+      const parts = [];
+      for (const f of files) {
+        const text = await parseFile(f);
+        if (text) parts.push('--- ' + f.name + ' ---\n' + text);
+      }
+      showContext(parts.join('\n\n'));
+    } catch (e) {
+      textEl.textContent = '[Error: ' + e.message + ']';
+      preview.hidden = false;
+    }
+    applyUiLang(uiLang);
+  }
+
+  dropZone.addEventListener('click', () => fileInput.click());
+  fileInput.addEventListener('change', () => handleFiles(fileInput.files));
+  clearBtn.addEventListener('click', clearContext);
+
+  dropZone.addEventListener('dragover', (e) => { e.preventDefault(); dropZone.classList.add('dragover'); });
+  dropZone.addEventListener('dragleave', () => dropZone.classList.remove('dragover'));
+  dropZone.addEventListener('drop', (e) => {
+    e.preventDefault();
+    dropZone.classList.remove('dragover');
+    handleFiles(e.dataTransfer.files);
+  });
+})();
 
 // ---------- Init ----------
 

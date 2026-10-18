@@ -1,0 +1,184 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Game Prompt Studio</title>
+  <meta name="description" content="Generate STAR-framework prompts (English or Bahasa Indonesia) for Gemini Canvas to build your own interactive browser game.">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="site-header">
+    <div class="brand">
+      <span class="logo" aria-hidden="true">🎮</span>
+      <div>
+        <h1>Game Prompt Studio</h1>
+        <p class="tagline" data-i18n="tagline"></p>
+      </div>
+    </div>
+    <div class="header-right">
+      <div class="presets" role="group" data-i18n-aria="presetsAria">
+        <span class="presets-label" data-i18n="startFrom"></span>
+        <button type="button" class="chip" data-preset="mathQuiz" data-i18n="presetMath"></button>
+        <button type="button" class="chip" data-preset="spaceDodge" data-i18n="presetSpace"></button>
+        <button type="button" class="chip" data-preset="mystery" data-i18n="presetMystery"></button>
+        <button type="button" class="chip" data-preset="vocabMemory" data-i18n="presetVocab"></button>
+      </div>
+      <div class="lang-switch" role="group" data-i18n-aria="uiLangAria">
+        <button type="button" data-ui-lang="id" aria-pressed="false">🇮🇩 IDN</button>
+        <button type="button" data-ui-lang="en" aria-pressed="true">🇬🇧 ENG</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="layout">
+    <form id="builder" class="builder" autocomplete="off">
+      <!-- 1. Basics -->
+      <section class="card">
+        <h2><span class="step">1</span> <span data-i18n="s1"></span></h2>
+        <div class="grid two">
+          <label><span data-i18n="fTitle"></span>
+            <input type="text" name="title" data-i18n-ph="phTitle">
+          </label>
+          <label><span data-i18n="fGenre"></span>
+            <select name="genre" id="genre"></select>
+          </label>
+        </div>
+        <p class="genre-desc" id="genreDesc"></p>
+        <label><span data-i18n="fTheme"></span>
+          <input type="text" name="theme" data-i18n-ph="phTheme">
+        </label>
+        <label><span data-i18n="fConcept"></span> <span class="opt" data-i18n="optional"></span>
+          <textarea name="concept" rows="3" data-i18n-ph="phConcept"></textarea>
+        </label>
+        <div class="grid two">
+          <label><span data-i18n="fAudience"></span>
+            <select name="audience" data-options="AUDIENCES"></select>
+          </label>
+          <label><span data-i18n="fPurpose"></span>
+            <select name="purpose" data-options="PURPOSES"></select>
+          </label>
+        </div>
+        <label id="objectiveWrap" hidden><span data-i18n="fObjective"></span>
+          <input type="text" name="objective" data-i18n-ph="phObjective">
+        </label>
+      </section>
+
+      <!-- 2. Gameplay -->
+      <section class="card">
+        <h2><span class="step">2</span> <span data-i18n="s2"></span></h2>
+        <div class="grid three">
+          <label><span data-i18n="fLevels"></span>
+            <input type="number" name="levels" min="1" max="20" value="3">
+          </label>
+          <label><span data-i18n="fLives"></span>
+            <input type="number" name="lives" min="1" max="10" value="3">
+          </label>
+          <label><span data-i18n="fSession"></span>
+            <select name="session" data-options="SESSIONS"></select>
+          </label>
+        </div>
+        <div class="field">
+          <span class="field-label" id="diffLabel" data-i18n="fDifficulty"></span>
+          <div class="segmented" role="radiogroup" aria-labelledby="diffLabel">
+            <label><input type="radio" name="difficulty" value="easy"><span data-i18n="easy"></span></label>
+            <label><input type="radio" name="difficulty" value="normal" checked><span data-i18n="normal"></span></label>
+            <label><input type="radio" name="difficulty" value="hard"><span data-i18n="hard"></span></label>
+          </div>
+        </div>
+      </section>
+
+      <!-- 3. Features -->
+      <section class="card">
+        <h2><span class="step">3</span> <span data-i18n="s3"></span></h2>
+        <div class="checks" id="features"></div>
+      </section>
+
+      <!-- 4. Look & feel -->
+      <section class="card">
+        <h2><span class="step">4</span> <span data-i18n="s4"></span></h2>
+        <div class="grid two">
+          <label><span data-i18n="fStyle"></span>
+            <select name="style" data-options="STYLES"></select>
+          </label>
+          <label><span data-i18n="fPalette"></span>
+            <select name="palette" data-options="PALETTES"></select>
+          </label>
+        </div>
+        <div class="swatches" id="swatches" aria-hidden="true"></div>
+        <div class="grid three" id="customColors" hidden>
+          <label><span data-i18n="cPrimary"></span> <input type="color" name="c1" value="#6d5efc"></label>
+          <label><span data-i18n="cAccent"></span> <input type="color" name="c2" value="#ffb020"></label>
+          <label><span data-i18n="cBg"></span> <input type="color" name="c3" value="#101828"></label>
+        </div>
+        <div class="grid two">
+          <label><span data-i18n="fGameLang"></span>
+            <select name="lang" data-options="GAME_LANGS"></select>
+          </label>
+          <label><span data-i18n="fMood"></span>
+            <select name="mood" data-options="MOODS"></select>
+          </label>
+        </div>
+      </section>
+
+      <!-- 5. Output -->
+      <section class="card">
+        <h2><span class="step">5</span> <span data-i18n="s5"></span></h2>
+        <div class="field">
+          <span class="field-label" id="promptLangLabel" data-i18n="fPromptLang"></span>
+          <div class="segmented" role="radiogroup" aria-labelledby="promptLangLabel">
+            <label><input type="radio" name="promptLang" value="id"><span>🇮🇩 Bahasa Indonesia</span></label>
+            <label><input type="radio" name="promptLang" value="en" checked><span>🇬🇧 English</span></label>
+          </div>
+          <small class="hint" data-i18n="promptLangHint"></small>
+        </div>
+        <div class="radio-list">
+          <label class="radio-card">
+            <input type="radio" name="format" value="single" checked>
+            <span><strong data-i18n="fmtSingle"></strong><small data-i18n-html="fmtSingleDesc"></small></span>
+          </label>
+          <label class="radio-card">
+            <input type="radio" name="format" value="multi">
+            <span><strong data-i18n="fmtMulti"></strong><small data-i18n-html="fmtMultiDesc"></small></span>
+          </label>
+        </div>
+        <div class="checks compact">
+          <label class="check"><input type="checkbox" name="comments" checked><span data-i18n="optComments"></span></label>
+          <label class="check"><input type="checkbox" name="localhost" checked><span data-i18n="optLocalhost"></span></label>
+          <label class="check"><input type="checkbox" name="nextIdeas" checked><span data-i18n="optNext"></span></label>
+        </div>
+        <label><span data-i18n="fExtra"></span> <span class="opt" data-i18n="optional"></span>
+          <textarea name="extra" rows="3" data-i18n-ph="phExtra"></textarea>
+        </label>
+      </section>
+    </form>
+
+    <aside class="output" data-i18n-aria="outAria">
+      <div class="output-inner">
+        <div class="output-head">
+          <h2 data-i18n="outTitle"></h2>
+          <span class="meta" id="meta"></span>
+        </div>
+        <div class="star-legend" id="legend" aria-hidden="true"></div>
+        <pre id="prompt" class="prompt" tabindex="0"></pre>
+        <div class="actions">
+          <button type="button" class="btn primary" id="copyBtn" data-i18n="copy"></button>
+          <button type="button" class="btn" id="downloadBtn" data-i18n="download"></button>
+          <a class="btn" href="https://gemini.google.com/app" target="_blank" rel="noopener" data-i18n="openGemini"></a>
+        </div>
+        <details class="howto">
+          <summary data-i18n="howtoTitle"></summary>
+          <ol data-i18n-html="howtoSteps"></ol>
+        </details>
+        <details class="howto">
+          <summary data-i18n="followTitle"></summary>
+          <ul class="followups" id="followups"></ul>
+        </details>
+      </div>
+    </aside>
+  </main>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  <script src="app.js"></script>
+</body>
+</html>
