@@ -389,14 +389,14 @@ const GENRES = {
     tech: CANVAS_TECH,
     mechanics: {
       en: [
-        'Grid-based snake moving at a fixed tick rate; eating food makes it grow by one segment.',
+        'Grid-based snake that automatically moves forward one cell every tick (e.g. every 150 ms). The snake MUST keep moving on its own without any player input — the player only changes direction. Eating food makes it grow by one segment.',
         "Hitting a wall or the snake's own body ends the round (or costs a life).",
         'Speed increases slightly every few pieces of food and with each level.',
         'Special bonus food appears for a few seconds and is worth extra points.',
         'Queue direction changes so that fast key presses never make the snake reverse into itself.',
       ],
       id: [
-        'Ular bergerak di kisi dengan kecepatan tick tetap; makan makanan membuatnya bertambah satu ruas.',
+        'Ular bergerak otomatis maju satu sel setiap tick (mis. setiap 150 ms). Ular HARUS terus bergerak sendiri tanpa input pemain — pemain hanya mengubah arah. Makan makanan membuatnya bertambah satu ruas.',
         'Menabrak dinding atau tubuhnya sendiri mengakhiri ronde (atau mengurangi satu nyawa).',
         'Kecepatan bertambah sedikit setiap beberapa makanan dan di setiap level.',
         'Makanan bonus khusus muncul beberapa detik dan bernilai poin ekstra.',
