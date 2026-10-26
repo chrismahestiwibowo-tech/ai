@@ -169,8 +169,8 @@ const UI = {
 // ---------- Data ----------
 
 const CANVAS_TECH = {
-  en: 'an HTML5 <canvas> rendered with a requestAnimationFrame game loop that uses delta time, so speed is identical on 60 Hz and 120 Hz screens',
-  id: 'HTML5 <canvas> yang dirender dengan game loop requestAnimationFrame berbasis delta time, agar kecepatannya sama di layar 60 Hz maupun 120 Hz',
+  en: 'an HTML5 <canvas> rendered with a continuously running requestAnimationFrame game loop that uses delta time, so speed is identical on 60 Hz and 120 Hz screens. CRITICAL: the game loop MUST call requestAnimationFrame recursively and run every frame while the game state is "playing". Objects (enemies, items, projectiles, the player) MUST move and update their positions every frame — the game must NEVER be static or frozen. If nothing visibly moves on screen during gameplay, the game is broken.',
+  id: 'HTML5 <canvas> yang dirender dengan game loop requestAnimationFrame yang berjalan terus-menerus berbasis delta time, agar kecepatannya sama di layar 60 Hz maupun 120 Hz. KRITIS: game loop HARUS memanggil requestAnimationFrame secara rekursif dan berjalan setiap frame selama state game adalah "playing". Objek (musuh, item, proyektil, pemain) HARUS bergerak dan memperbarui posisinya setiap frame — game TIDAK BOLEH statis atau diam. Jika tidak ada yang terlihat bergerak di layar selama bermain, berarti game rusak.',
 };
 const DOM_TECH = {
   en: 'semantic HTML elements styled with CSS (transitions, transforms, grid/flexbox) and driven by vanilla JavaScript',
@@ -240,17 +240,17 @@ const GENRES = {
     tech: CANVAS_TECH,
     mechanics: {
       en: [
-        'The player runs and jumps with gravity, acceleration and friction; add coyote time (100 ms) and jump buffering so the controls feel tight.',
+        'The player runs and jumps with gravity, acceleration and friction; add coyote time (100 ms) and jump buffering so the controls feel tight. The player character MUST respond to input and move every frame — gravity must pull them down continuously.',
         'Each level has platforms, collectibles, hazards and a goal flag; define levels as data (tile-map arrays) so new levels are easy to add.',
         'The camera smoothly follows the player horizontally.',
-        'Simple enemies patrol back and forth; jumping on them defeats them, touching them from the side costs a life.',
+        'Simple enemies patrol back and forth continuously (moving every frame); jumping on them defeats them, touching them from the side costs a life. Enemies must be visibly moving at all times.',
         'Use axis-separated AABB collision so the player never gets stuck in walls.',
       ],
       id: [
-        'Pemain berlari dan melompat dengan gravitasi, akselerasi, dan gesekan; tambahkan coyote time (100 ms) dan jump buffering agar kontrol terasa responsif.',
+        'Pemain berlari dan melompat dengan gravitasi, akselerasi, dan gesekan; tambahkan coyote time (100 ms) dan jump buffering agar kontrol terasa responsif. Karakter pemain HARUS merespons input dan bergerak setiap frame — gravitasi harus menariknya turun terus-menerus.',
         'Setiap level punya platform, item untuk dikumpulkan, rintangan, dan bendera finis; definisikan level sebagai data (array tile-map) agar level baru mudah ditambahkan.',
         'Kamera mengikuti pemain secara horizontal dengan halus.',
-        'Musuh sederhana berpatroli bolak-balik; melompat di atasnya mengalahkannya, menyentuhnya dari samping mengurangi satu nyawa.',
+        'Musuh sederhana berpatroli bolak-balik secara terus-menerus (bergerak setiap frame); melompat di atasnya mengalahkannya, menyentuhnya dari samping mengurangi satu nyawa. Musuh harus terlihat bergerak setiap saat.',
         'Gunakan deteksi tabrakan AABB per sumbu agar pemain tidak pernah tersangkut di dinding.',
       ],
     },
@@ -269,14 +269,16 @@ const GENRES = {
     tech: CANVAS_TECH,
     mechanics: {
       en: [
-        'The player moves horizontally along the bottom of the screen; items fall from the top.',
+        'The player character moves horizontally along the bottom of the screen using arrow keys, A/D, mouse, or touch drag. The player must be able to move smoothly left and right every frame.',
+        'Items MUST continuously fall from the top of the screen at all times during gameplay. Use a spawn timer (e.g. every 0.5–1.5 seconds) to create new falling items at random X positions, and update their Y position every frame so they visibly move downward. The screen must NEVER be empty of falling items for more than 2 seconds.',
         'Catching good items earns points; touching bad items costs a life.',
         'Spawn rate and falling speed increase over time and with each level.',
         'Occasionally spawn power-ups (shield, magnet, slow motion) that last a few seconds and are shown in the HUD.',
         'Consecutive catches build a combo multiplier that resets when an item is missed.',
       ],
       id: [
-        'Pemain bergerak horizontal di bagian bawah layar; item berjatuhan dari atas.',
+        'Karakter pemain bergerak horizontal di bagian bawah layar menggunakan tombol panah, A/D, mouse, atau geser sentuh. Pemain harus bisa bergerak dengan halus ke kiri dan kanan setiap frame.',
+        'Item HARUS terus-menerus berjatuhan dari atas layar sepanjang waktu selama bermain. Gunakan timer spawn (mis. setiap 0,5–1,5 detik) untuk membuat item baru yang jatuh di posisi X acak, dan perbarui posisi Y mereka setiap frame agar terlihat bergerak turun. Layar TIDAK BOLEH kosong tanpa item yang jatuh selama lebih dari 2 detik.',
         'Menangkap item baik menambah poin; menyentuh item buruk mengurangi satu nyawa.',
         'Frekuensi munculnya item dan kecepatan jatuhnya meningkat seiring waktu dan di setiap level.',
         'Sesekali munculkan power-up (perisai, magnet, gerak lambat) yang bertahan beberapa detik dan ditampilkan di HUD.',
@@ -1425,8 +1427,8 @@ function buildPrompt(cfg) {
       id: 'Susun kode dalam bagian-bagian yang jelas: CONFIG (semua angka yang bisa diatur dalam satu objek), STATE, INPUT, UPDATE, RENDER, UI/SCREENS, AUDIO, dan STORAGE.',
     }),
     T({
-      en: 'Use a single state machine for screens (menu, playing, paused, levelComplete, gameOver) so there are no overlapping timers or duplicate event listeners when the player restarts.',
-      id: 'Gunakan satu state machine untuk layar (menu, playing, paused, levelComplete, gameOver) agar tidak ada timer yang tumpang tindih atau event listener ganda saat pemain mengulang.',
+      en: 'Use a single state machine for screens (menu, playing, paused, levelComplete, gameOver) so there are no overlapping timers or duplicate event listeners when the player restarts. The main game loop function must call requestAnimationFrame(gameLoop) at the end of every frame and must update + render all game objects every frame while the state is "playing". Verify that the game loop is actually started when the player clicks Play.',
+      id: 'Gunakan satu state machine untuk layar (menu, playing, paused, levelComplete, gameOver) agar tidak ada timer yang tumpang tindih atau event listener ganda saat pemain mengulang. Fungsi game loop utama harus memanggil requestAnimationFrame(gameLoop) di akhir setiap frame dan harus memperbarui + merender semua objek game setiap frame selama state-nya "playing". Pastikan game loop benar-benar dimulai saat pemain mengklik Main.',
     }),
     T({ en: 'Restarting or playing again must fully reset the game state.', id: 'Mengulang atau main lagi harus mengembalikan seluruh state game ke awal.' }),
     T({
